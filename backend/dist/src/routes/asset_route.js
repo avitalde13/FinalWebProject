@@ -6,6 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
 const assets_controller_1 = __importDefault(require("../controllers/assets_controller"));
-router.get("/", assets_controller_1.default.getAllAssets.bind(assets_controller_1.default));
+router
+    .get("/", assets_controller_1.default.getAllAssets.bind(assets_controller_1.default))
+    .get("/", assets_controller_1.default.getAssetsByAddress.bind(assets_controller_1.default))
+    .get("/", assets_controller_1.default.getAssetsByPrice.bind(assets_controller_1.default));
 exports.default = router;
 //# sourceMappingURL=asset_route.js.map
