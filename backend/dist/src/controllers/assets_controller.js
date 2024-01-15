@@ -16,9 +16,33 @@ const assets_model_1 = __importDefault(require("../models/assets_model"));
 class AssetsController {
     getAllAssets(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAllStudents");
+            console.log("getAllAssets");
             try {
                 const assets = yield assets_model_1.default.find();
+                res.send(assets);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    getAssetsByAddress(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("getAssetsByAddress");
+            try {
+                const assets = yield assets_model_1.default.find({ address: req.params.address });
+                res.send(assets);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    getAssetsByPrice(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("getAssetsByPrice");
+            try {
+                const assets = yield assets_model_1.default.find({ price: req.params.price });
                 res.send(assets);
             }
             catch (err) {

@@ -17,6 +17,10 @@ const assetSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
+    imgSrc: {
+        type: String,
+        required: true,
+    },
 });
 exports.default = mongoose_1.default.model("assets", assetSchema);
 //# sourceMappingURL=assets_model.js.map

@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 
 
+
 interface Props {
     property: PropertyType;
 }
@@ -29,6 +30,7 @@ const Property = (props: Props) => {
     return (
         <Card sx={{ maxWidth: 345, paddingRight: 10 }}>
           <CardActionArea>
+            
             <CardMedia
               component="img"
               height="140"
@@ -36,6 +38,7 @@ const Property = (props: Props) => {
               alt="green iguana"
             />
             <CardContent>
+              
               <Typography gutterBottom variant="h5"  justifyContent={"center"} component="div">
                 Price: {props.property.price}
               </Typography>
