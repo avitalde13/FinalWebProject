@@ -1,13 +1,13 @@
 import { Card, Divider, Grid, List, Stack } from "@mui/material";
 import Property from "../components/Property";
-import { PropertyType } from "../models/Property";
 // import { TApiResponse, useApiGet } from "../utils/useFetchApi";
 import LoadingSpinner from "../components/LoadingSpinner";
 import FilterBar from "../components/Filters/FilterBar";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Slider from "../components/Filters/Slider";
-import MultiActionAreaCard from "../components/AssetCard";
+import { convertToObject } from "typescript";
+// import MultiActionAreaCard from "../components/AssetCard";
 const HomePage = () => {
     const [assets, setAssets] = useState([]);
   
@@ -23,23 +23,55 @@ const HomePage = () => {
               // enable CORS
               mode: 'cors',
             });
-          const data = await response.json();
-          setAssets(data);
+          const assets = await response.json();
+          assets.forEach(async (asset) => {
+            // const comments = await fetchDataComment(asset._id);
+            let comments = await fetchDataComment(asset._id);
+            asset.comments = comments;
+            setAssets(assets);
+          }
+          );
+          console.log(assets);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       };
       // Call the fetch data function
+      
+
+      const fetchDataComment = async (assetid: string) => {
+        let data = [];
+        try {
+          const response = await fetch('http://localhost:3000/comments/asset?assetId=' + assetid, {
+            headers: {
+                'Content-Type': 'application/json'
+              },
+              // enable CORS
+              mode: 'cors',
+            });
+          data = await response.json();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+        return data;
+      };
+
       fetchData();
+
     }, []); // The empty dependency array ensures the effect runs once after the initial render
   
+    
+    if (!assets) {
+      return <LoadingSpinner />;
+    }
+
     return (
       <div>
         <h2>Asset List</h2>
         <ul>
             <FilterBar></FilterBar>
             
-          {assets.map((asset:PropertyType, i:number) => <Property property={asset} key={ asset._id} />)}
+          {assets.map((asset) => <Property asset={asset} key={ asset._id} />)}
         </ul>
       </div>
     );
