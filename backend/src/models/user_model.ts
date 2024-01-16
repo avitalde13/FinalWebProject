@@ -1,12 +1,20 @@
 import mongoose from "mongoose";
 
 export interface IUser {
+  name: string;
   email: string;
   password: string;
-  _id?: string;
+  assets?: string[];
+  id?: string;
+  profilePic?: string;
+  refreshToken: string[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({
+  name:{
+    type:String,
+    required:true
+  },
   email: {
     type: String,
     required: true,
@@ -14,6 +22,14 @@ const userSchema = new mongoose.Schema<IUser>({
   password: {
     type: String,
     required: true,
+  },
+  profilePic: {
+    type: String,
+    default: "https://www.pngwing.com/en/free-png-zzjjb",
+  },
+  refreshToken: {
+    type: [String],
+    default: [],
   },
 
 });

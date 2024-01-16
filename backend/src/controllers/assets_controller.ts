@@ -36,6 +36,54 @@ class AssetsController{
         }
     }
 
+    async createAsset(req: Request, res: Response) {
+        console.log("createAsset");
+        try {
+            const assetBody = {
+                address: req.body.address,
+                price: req.body.price,
+                imgSrc: req.body.imgSrc
+            }
+            const asset = new Asset(assetBody);
+            asset.save();
+            res.send(asset);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+    async deleteAsset(req: Request, res: Response) {
+        console.log("deleteAsset");
+        try {
+            const asset_id = req.query.assetId
+            
+             await Asset.findByIdAndDelete(asset_id);
+            res.send({message: "Asset deleted successfully"});
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+
+    async updateAsset(req: Request, res: Response) {
+        console.log("createAsset");
+        const asset_id = req.query.assetId
+        try {
+            const assetBody = {
+                address: req.body.address,
+                price: req.body.price,
+                imgSrc: req.body.imgSrc
+            }
+            const asset = await Asset.findByIdAndUpdate(
+                {_id: asset_id},
+                 assetBody
+            );
+            asset.save();
+            res.send(asset);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+
+
 }
 
 export default new AssetsController;

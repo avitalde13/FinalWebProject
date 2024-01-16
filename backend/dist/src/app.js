@@ -9,6 +9,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const asset_route_1 = __importDefault(require("./routes/asset_route"));
+const comment_route_1 = __importDefault(require("./routes/comment_route"));
 const auth_route_1 = __importDefault(require("./routes/auth_route"));
 const cors_1 = __importDefault(require("cors"));
 const initApp = () => {
@@ -22,6 +23,7 @@ const initApp = () => {
             app.use(body_parser_1.default.json());
             app.use(body_parser_1.default.urlencoded({ extended: true }));
             app.use((0, cors_1.default)());
+            app.use("/comments", comment_route_1.default);
             app.use("/assets", asset_route_1.default);
             app.use("/auth", auth_route_1.default);
             resolve(app);

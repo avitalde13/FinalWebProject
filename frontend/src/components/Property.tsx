@@ -1,5 +1,4 @@
 import { Box, Flex, Image, Text, Avatar, Link } from '@chakra-ui/react';
-import { PropertyType } from '../models/Property';
 
 import * as React from 'react';
 import Card from '@mui/material/Card';
@@ -11,7 +10,7 @@ import { CardActionArea } from '@mui/material';
 
 
 interface Props {
-    property: PropertyType;
+    asset: any;
 }
 
 const Property = (props: Props) => {
@@ -34,19 +33,25 @@ const Property = (props: Props) => {
             <CardMedia
               component="img"
               height="140"
-              image={props.property.imgSrc}
+              image={props.asset.imgSrc}
               alt="green iguana"
             />
             <CardContent>
               
               <Typography gutterBottom variant="h5"  justifyContent={"center"} component="div">
-                Price: {props.property.price}
+                Price: {props.asset.price}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Address: {props.property.address}  
+                Address: {props.asset.address}  
               
               </Typography>
-
+              {props.asset.comments ? (
+                props.asset.comments.map((comment) => (
+                  <p>{comment.text}</p>
+                ))
+              ) : (
+                <p>No comments</p>
+              )}
             </CardContent>
           </CardActionArea>
         </Card>
