@@ -101,14 +101,13 @@ function ResponsiveAppBar() {
   }
 
   const SubmitRegisterEvent = async () => {
-    const data = await axios.post('http://localhost:3000/users/register', {user: {username: userRegister.username, email: userRegister.email, password: userRegister.password, profilePic: userRegister.profilePic}});
-    console.log('data',data);
-    // if (accessToken) {
-    //   localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
-    //   setIsLoggedIn(true);
-    //   setOpenRegister(false);
+    const accessToken = await axios.post('http://localhost:3000/users/register', userRegister).then(res => res.data);
+    if (accessToken) {
+      localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
+      setIsLoggedIn(true);
+      setOpenRegister(false);
 
-    // }
+    }
   }
 
   const deleteToken = () => {
