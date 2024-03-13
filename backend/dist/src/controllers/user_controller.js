@@ -1,62 +1,79 @@
-// import jwt from "jsonwebtoken";
-// import bcrypt from "bcrypt";
-// import { Request, Response,NextFunction } from "express";
-// import user_model from "../models/user_model";
-// import User, {IUser} from "../models/user_model";
-// import {ObjectId} from "mongoose"
-// const getAllUsers = async (req:Request, res:Response) => {
-//         try {
-//                 const user = await User.find();
-//                 // res.status(200).json(users);
-//                 res.send(user);
-//         } catch (error) {
-//                 res.status(500).json({ message: error.message });
-//         }
-// };
-// const getUserById = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params.userId;
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-// const getUserByName = async (name:string) => {
-//     if (name) {
-//       try {
-//         const user = await User.findOne({ name });
-//         if (user) {
-//           return user;
-//         }
-//         return null;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Name is required");
-//   };
-//   const getUserByEmail = async (email:string) => {
-//   if (email) {
-//     try {
-//       const user = await User.findOne({ email });
-//       if (user) {
-//         return user;
-//       }
-//       return null;
-//     } catch (error) {
-//       throw new Error(error.message);
-//     }
-//   }
-//   throw new Error("Email is required");
-// };
-// const getUserByEmail = async (req:Request, res:Response) => {
-//     try {
-//       const user = await getUserByEmail(req.body.email);
-//       res.status(200).json(user);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   };
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const user_model_1 = __importDefault(require("../models/user_model"));
+const mongoose_1 = require("mongoose");
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield user_model_1.default.find();
+        // res.status(200).json(users);
+        res.send(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userId = req.params.userId;
+        res.status(200).json(user_model_1.default);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const getUserByName = (name) => __awaiter(void 0, void 0, void 0, function* () {
+    if (name) {
+        try {
+            const user = yield user_model_1.default.findOne({ name });
+            if (user) {
+                return user;
+            }
+            return null;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Name is required");
+});
+const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    if (email) {
+        try {
+            const user = yield user_model_1.default.findOne({ email });
+            if (user) {
+                return user;
+            }
+            return null;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Email is required");
+});
+const getUserByEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield getUserByEmail(req.params.email);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 // const getUserDetails = async (req:Request, res:Response) => {
 //   try {
 //     const { token } = req.body;
@@ -69,120 +86,178 @@
 //     res.status(500).json({ message: error.message });
 //   }
 // };
-// const createUser = async (user:IUser) => {
-//     if (user) {
-//       try {
-//         const { name, email, password } = user;
-//         if (!name || !email || !password) {
-//           throw new Error("Name, email and password are required");
-//         }
-//         if (await getUserByEmail(email)) {
-//           throw new Error("Email already exists");
-//         }
-//         //const id = (email+name).replace(/\s/g, '_');
-//         const newUser = new User({ ...user });
-//         await newUser.save();
-//         return newUser;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("User is required");
-//   };
-//   const createUser = async (req:Request, res:Response) => {
-//     try {
-//       const user = { ...req.body };
-//       user.name = user.name
-//         .split(" ")
-//         .map((s) => s.charAt(0).toUpperCase() + s.substring(1).toLowerCase())
-//         .join(" ");
-//       const salt = bcrypt.genSaltSync(10); // I ADDED CONST ?
-//       user.email = user.email.toLowerCase();
-//       user.password = bcrypt.hashSync(user.password, salt);
-//       const createdUser = await createUser(user);
-//       res.status(201).json(createdUser);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   };
-//   const deleteUser = async (id:ObjectId) => {
-//     if (id) {
-//       try {
-//         const user = await User.findByIdAndDelete(id);
-//         if (user) {
-//           return user;
-//         }
-//         return null;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Id is required");
-//   };
-// const deleteUser = async (req:Request, res:Response) => {
-//   try {
-//     const user = await deleteUser(req.params.userId);
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-// const updateUser = async (id:ObjectId, newUser:IUser) => {
-//     if (id && newUser) {
-//       try {
-//         await User.findOneAndUpdate({ _id: id }, newUser);
-//         return newUser;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Id and new user are required");
-//   };
-// const updateUser = async (req:Request, res:Response) => {
-//   try {
-//     const userIdParams = req.params.userId;
-//     const { token, updatedUser } = req.body;
-//     const decodedToken = jwt.decode(token);
-//     const userId = decodedToken.id;
-//     const user = await userService.getUserById(userId);
-//     if (updatedUser.name)
-//       updatedUser.name = updatedUser.name
-//         .split(" ")
-//         .map((s) => s.charAt(0).toUpperCase() + s.substring(1).toLowerCase())
-//         .join(" ");
-//     if (updatedUser.email) updatedUser.email = updatedUser.email.toLowerCase();
-//     const userAfterUpdate = await userService.updateUser(userId, updatedUser);
-//     userAfterUpdate.password = undefined;
-//     res.status(200).json({ message: "User updated successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-// const addSongsToUser = async (id:ObjectId, songs:ObjectId[]) => { // IS IT SONG []  OR SONGS ID [] ??? SONG/ObjectId
-//     if (id) {
-//       try {
-//         const user = await User.findById(id);
-//         if (user) {
-//           for (let i = 0; i < songs.length; i++) {
-//             user.songs.push(songs[i]);
-//           }
-//           await updateUser(id, user);
-//           return user;
-//         }
-//         throw new Error("User not found");
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//   };
-// const getUserSongs = async (req:Request, res:Response) => {
-//   try {
-//     const user = await getUserSongs(req.params.id);
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+const createUser = (newUser) => __awaiter(void 0, void 0, void 0, function* () {
+    if (newUser) {
+        try {
+            const { name, email, password } = newUser;
+            if (!name || !email || !password) {
+                throw new Error("Name, email and password are required");
+            }
+            const hashedPassword = bcrypt_1.default.hashSync(password, 10);
+            newUser.password = hashedPassword;
+            const user = new user_model_1.default(Object.assign({}, newUser));
+            yield user.save();
+            return user;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+});
+const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("body", req.body);
+    try {
+        const user = yield createUser(req.body.user);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    if (id) {
+        try {
+            const user = yield user_model_1.default.findByIdAndDelete(id);
+            if (user) {
+                return user;
+            }
+            throw new Error("User not found");
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Id is required");
+});
+const deleteUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield deleteUser(req.params.id);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const updateUser = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (id) {
+        try {
+            const hashedPassword = bcrypt_1.default.hashSync(user.password, 10);
+            user.password = hashedPassword;
+            const updatedUser = yield user_model_1.default.findByIdAndUpdate(id, user, { new: true });
+            if (updatedUser) {
+                return updatedUser;
+            }
+            throw new Error("User not found");
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Id is required");
+});
+const updateUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield updateUser(req.params.id, req.body.user);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const addAssetToUser = (id, asset) => __awaiter(void 0, void 0, void 0, function* () {
+    if (id) {
+        try {
+            const user = yield user_model_1.default.findById(id.toString());
+            if (user) {
+                if (user.assets.includes(asset)) {
+                    throw new Error("Asset already exists");
+                }
+                user.assets.push(asset);
+                yield updateUser(id.toString(), user);
+                return user;
+            }
+            throw new Error("User not found");
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+});
+const addAssetToUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield addAssetToUser(new mongoose_1.Types.ObjectId(req.body.id), new mongoose_1.Types.ObjectId(req.body.asset));
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const removeAssetFromUser = (id, asset) => __awaiter(void 0, void 0, void 0, function* () {
+    if (id) {
+        try {
+            const user = yield user_model_1.default.findById(id.toString());
+            if (user) {
+                if (!user.assets.includes(asset)) {
+                    throw new Error("Asset does not exist");
+                }
+                user.assets = user.assets.filter((assetId) => assetId.toString() !== asset.toString());
+                yield updateUser(id.toString(), user);
+                return user;
+            }
+            throw new Error("User not found");
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+});
+const removeAssetFromUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // const token = req.headers["Authorization"];
+        const user = yield removeAssetFromUser(new mongoose_1.Types.ObjectId(req.body.id), new mongoose_1.Types.ObjectId(req.body.asset)); // add tokens and then can use params instead of body .
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(req.body);
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email || !password) {
+        return res.status(400).send("missing username or password");
+    }
+    try {
+        const user = yield user_model_1.default.findOne({ email: email });
+        console.log(user);
+        if (user == null) {
+            return res.status(401).send("username or password incorrect");
+        }
+        const match = yield bcrypt_1.default.compare(password, user.password);
+        console.log("1");
+        if (!match) {
+            return res.status(401).send("username or password incorrect");
+        }
+        console.log("2");
+        const today = new Date();
+        const token = yield jsonwebtoken_1.default.sign({ id: user._id, createDate: today }, process.env.JWT_SECRET);
+        return res.status(200).send({ 'accessToken': token });
+    }
+    catch (err) {
+        return res.status(400).send("error missing username or password");
+    }
+});
+const UserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userid = req.body.userId;
+        const user = (yield user_model_1.default.findOne({ _id: userid }));
+        return res.status(200).send(user);
+    }
+    catch (err) {
+        return res.status(400).send("failed to get user info");
+    }
+});
 // const addSongsToUser = async (id:ObjectId, songs:ObjectId[]) => { // IS IT SONG []  OR SONGS ID [] ??? SONG/ObjectId
 //     if (id) {
 //       try {
@@ -407,30 +482,32 @@
 //     res.status(500).json({ message: error.message });
 //   }
 // }
-// export default {
-//   getAllUsers,
-//   getUserById,
-//   getUserByName,
-//   getUserByEmail,
-//   getUserDetails,
-//   createUser,
-//   deleteUser,
-//   updateUser,
-//   getUserSongs,
-//   addSongToUser,
-//   removeSongFromUser,
-//   userLogin,
-//   checkSong,
-//   googleLogin,
-//   checkToken,
-//   isRefreshTokenExist,
-//   verifyRefreshToken,
-//   generateAccessToken,
-//   logout,
-//   addSongsToUser,
-//   createGoogleUser,
-//   removeRefreshTokens,
-//   removeRefreshToken,
-//   addRefreshToken
-// };
+exports.default = {
+    getAllUsers,
+    getUserById,
+    getUserByName,
+    getUserByEmailHandler,
+    //   getUserDetails,
+    createUserHandler,
+    deleteUserHandler,
+    updateUserHandler,
+    addAssetToUserHandler,
+    removeAssetFromUserHandler,
+    loginUser,
+    UserInfo,
+    //   removeSongFromUser,
+    //   userLogin,
+    //   checkSong,
+    //   googleLogin,
+    //   checkToken,
+    //   isRefreshTokenExist,
+    //   verifyRefreshToken,
+    //   generateAccessToken,
+    //   logout,
+    //   addSongsToUser,
+    //   createGoogleUser,
+    //   removeRefreshTokens,
+    //   removeRefreshToken,
+    //   addRefreshToken
+};
 //# sourceMappingURL=user_controller.js.map

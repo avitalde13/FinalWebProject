@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
 
 export interface IUser {
-  name: string;
+  name?: string;
   email: string;
   password: string;
-  assets?: string[];
+  assets?: Types.ObjectId[];
   id?: string;
   profilePic?: string;
-  refreshToken: string[];
+  refreshToken?: string[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -18,10 +18,20 @@ const userSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
+  },
+  assets: {
+    type:   [
+      {
+     type:  mongoose.Schema.Types.ObjectId,
+      ref: "Asset",
+    }
+  ],
+    default: [],
   },
   profilePic: {
     type: String,

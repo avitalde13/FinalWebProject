@@ -16,7 +16,6 @@ const assets_model_1 = __importDefault(require("../models/assets_model"));
 class AssetsController {
     getAllAssets(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAllAssets");
             try {
                 const assets = yield assets_model_1.default.find();
                 res.send(assets);
@@ -28,7 +27,6 @@ class AssetsController {
     }
     getAssetsByAddress(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAssetsByAddress");
             try {
                 const assets = yield assets_model_1.default.find({ address: req.params.address });
                 res.send(assets);
@@ -40,7 +38,6 @@ class AssetsController {
     }
     getAssetsByPrice(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAssetsByPrice");
             try {
                 const assets = yield assets_model_1.default.find({ price: req.params.price });
                 res.send(assets);
@@ -52,7 +49,6 @@ class AssetsController {
     }
     createAsset(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("createAsset");
             try {
                 const assetBody = {
                     address: req.body.address,
@@ -70,7 +66,6 @@ class AssetsController {
     }
     deleteAsset(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("deleteAsset");
             try {
                 const asset_id = req.query.assetId;
                 yield assets_model_1.default.findByIdAndDelete(asset_id);
@@ -83,7 +78,6 @@ class AssetsController {
     }
     updateAsset(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("createAsset");
             const asset_id = req.query.assetId;
             try {
                 const assetBody = {

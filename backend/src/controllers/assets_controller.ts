@@ -7,7 +7,7 @@ import auth from "../common/auth_middleware";
 class AssetsController{
 
     async getAllAssets(req: Request, res: Response) {
-        console.log("getAllAssets");
+    
         try {
             const assets = await Asset.find();
             res.send(assets);
@@ -17,7 +17,7 @@ class AssetsController{
     }
 
     async getAssetsByAddress(req: Request, res: Response) {
-        console.log("getAssetsByAddress");
+    
         try {
             const assets = await Asset.find({address: req.params.address});
             res.send(assets);
@@ -27,7 +27,7 @@ class AssetsController{
     }
 
     async getAssetsByPrice(req: Request, res: Response) {
-        console.log("getAssetsByPrice");
+    
         try {
             const assets = await Asset.find({price: req.params.price});
             res.send(assets);
@@ -37,7 +37,7 @@ class AssetsController{
     }
 
     async createAsset(req: Request, res: Response) {
-        console.log("createAsset");
+     
         try {
             const assetBody = {
                 address: req.body.address,
@@ -52,7 +52,7 @@ class AssetsController{
         }
     }
     async deleteAsset(req: Request, res: Response) {
-        console.log("deleteAsset");
+
         try {
             const asset_id = req.query.assetId
             
@@ -64,7 +64,7 @@ class AssetsController{
     }
 
     async updateAsset(req: Request, res: Response) {
-        console.log("createAsset");
+     
         const asset_id = req.query.assetId
         try {
             const assetBody = {
@@ -82,6 +82,8 @@ class AssetsController{
             res.status(500).json({ message: err.message });
         }
     }
+
+    
 
 
 }

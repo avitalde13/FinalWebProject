@@ -12,10 +12,20 @@ const userSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,
         required: true,
+    },
+    assets: {
+        type: [
+            {
+                type: mongoose_1.default.Schema.Types.ObjectId,
+                ref: "Asset",
+            }
+        ],
+        default: [],
     },
     profilePic: {
         type: String,
