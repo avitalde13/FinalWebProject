@@ -1,61 +1,119 @@
-import { Card, Divider, Grid, List, Stack } from "@mui/material";
-import Property from "../components/Property";
-// import { TApiResponse, useApiGet } from "../utils/useFetchApi";
-import LoadingSpinner from "../components/LoadingSpinner";
-import FilterBar from "../components/Filters/FilterBar";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Slider from "../components/Filters/Slider";
-import { convertToObject } from "typescript";
-import { Center } from "@chakra-ui/react";
-// import MultiActionAreaCard from "../components/AssetCard";
-import Navbar from "../components/NavBar";  
-
+import { Container, Typography, Divider, Card, CardContent, Grid } from "@mui/material";
+import Navbar from "../components/NavBar";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { assert } from "console";
+import Property from "../components/Property";
 
 const UserProfile = () => {
-    const [user, setUser] = useState({
-        email: '',
-        _id: ''
-      });
-  
-    useEffect(() => {
-      // Function to fetch data
-      const fetchData = async () => {
-        try {
-   
-          const response = await fetch('http://localhost:3000/users/info', {
-            headers: {
-                'Authorization': JSON.parse(localStorage.getItem('accessToken'))
-              },
-              // enable CORS
-              mode: 'cors',
-            });
-          const userdata = await response.json();
-          setUser(userdata);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-      // Call the fetch data function
-      
-      fetchData();
+  const [user, setUser] = useState(null);
+  const [assets, setAsset] = useState([]);
 
-    }, []); // The empty dependency array ensures the effect runs once after the initial render
-  
-    
-    if (!user) {
-      return <LoadingSpinner />;
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/users/info', {
+          headers: {
+            'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+          },
+          mode: 'cors',
+        });
+        const userdata = await response.json();
+        console.log("1", userdata.assets);
+        userdata.assets.forEach((asset) => {
+         fetchAssetData(asset);
+          
+        });
+        setUser(userdata);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-    return (
-      <div>
-        <Navbar></Navbar>
-        <a>email: {user.email}</a>
-        <br/>
-        <a>id: {user._id}</a>
-      </div>
-    );
-  };
+    fetchData();
+
+
+    const fetchAssetData = async (assetId) => {
+      try {
+        const response = await fetch('http://localhost:3000/assets/'+ assetId, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'cors',
+        });
+        const asset = await response.json();
+        console.log("3", asset);
+        setAsset(prev => [...prev, asset]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
   
+  }, []);
+
+  if (!user) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <div>
+      <Navbar />
+      <Container maxWidth="xl" sx={{ mt: 4 }}>
+        <Typography variant="h3" align="center" gutterBottom fontFamily={'cursive'} bgcolor={'grey'}>
+          User Profile
+        </Typography>
+        <Divider />
+
+        <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  profilePic
+                </Typography>
+                <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }}/>
+              </CardContent>
+            </Card>
+          </Grid>
+
+
+        <Grid container spacing={3} sx={{ mt: 3 }}>
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  User Name
+                </Typography>
+                <Typography variant="body1">{user.name}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Email
+                </Typography>
+                <Typography variant="body1">{user.email}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          
+          <Grid item xs={12}  container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} display={"flex"} flexDirection={"column"}>
+            <Card >
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  User Assets
+                </Typography>
+                <Typography variant="body1" >  {assets && assets.map((asset) => <Property asset={asset} key={asset._id} />)}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+      </Container>
+    </div>
+  );
+};
 
 export default UserProfile;
