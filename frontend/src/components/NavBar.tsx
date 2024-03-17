@@ -20,6 +20,10 @@ import { color } from '@chakra-ui/react';
 import axios from 'axios';
 import { json } from 'stream/consumers';
 import { useNavigate } from "react-router-dom";
+import { uploadPhoto } from '../services/file-service';
+
+import avatar from '../assets/avatar.png'
+import { unstable_renderSubtreeIntoContainer } from 'react-dom';
 
 
 //design
@@ -27,24 +31,15 @@ const violetBase = '#7F00FF';
 const violetMain = alpha(violetBase, 0.7);
 
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: violetMain,
-      light: alpha(violetBase, 0.5),
-      dark: alpha(violetBase, 0.9),
-      contrastText: getContrastRatio(violetMain, '#fff') > 4.5 ? '#fff' : '#111',
-    },
-  },
-});
 
 const pages = ['Home', 'About', 'Services', 'Contact'];
-const settings = ['Login', 'Register'];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -71,8 +66,10 @@ function ResponsiveAppBar() {
   const [isRegisterOpen, setOpenRegister] = React.useState(false);
   const [isLoginOpen, setOpenLogin] = React.useState(false);
   const [userLogin, setUserLogin] = React.useState({ email: "", password: "" });
-  const [userRegister, setUserRegister] = React.useState({ email: "", password: "" , username: "", profilePic: ""});
+  const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "" });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [imgSrc, setImgSrc] = React.useState<File>();
+
 
 
 
@@ -92,6 +89,7 @@ function ResponsiveAppBar() {
 
   const SubmitLoginEvent = async () => {
     const accessToken = await axios.post('http://localhost:3000/users/login', userLogin).then(res => res.data);
+
     if (accessToken) {
       localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
       setIsLoggedIn(true);
@@ -100,15 +98,53 @@ function ResponsiveAppBar() {
     }
   }
 
+//   const uploadPhoto = async (imgSrc: File) => {                                                            ?????
+//     return new Promise<string>((resolve, reject) => {
+//         console.log("Uploading photo..." + imgSrc)
+//         const formData = new FormData();
+//         let imagePath = "";
+//         if (imgSrc) {
+//             formData.append("file", imgSrc);
+//             axios.post('http://localhost:3000/file/upload').then(res => {
+//                 console.log(res);
+//                 imagePath = `http://localhost:3000/${res.data.file.path}`;
+//                 resolve(res.data.url);
+//             }).catch(err => {
+//                 console.log(err);
+//                 reject(err);
+//             });
+//         }
+//     });
+// }
+
   const SubmitRegisterEvent = async () => {
-    const accessToken = await axios.post('http://localhost:3000/users/register', userRegister).then(res => res.data);
+
+    console.log(userRegister);
+     await uploadPhoto(imgSrc!);
+    // console.log(url);
+    
+    const accessToken = await axios.post('http://localhost:3000/users/register', { user: userRegister}).then(res => res.data);
     if (accessToken) {
       localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
+     
       setIsLoggedIn(true);
       setOpenRegister(false);
 
     }
   }
+
+  const imgSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
+    if (e.target.files && e.target.files.length > 0) {
+      setImgSrc(e.target.files[0])
+      setUserRegister(prev => { return { ...prev, fileName: e.target.files[0].name  } })
+    }
+  }
+  const selectImg = () => {
+    console.log("Selecting image...")
+    fileInputRef.current?.click()
+  }
+
 
   const deleteToken = () => {
     localStorage.removeItem('accessToken');
@@ -130,7 +166,7 @@ function ResponsiveAppBar() {
     <AppBar position="static" sx={{ backgroundColor: "#1A1A1A", }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <HouseIcon sx={{ display: { xs: 'none', md: 'flex', fontSize: 45 }, mr: 0.5 }} onClick = {()=> navigate("/home")} />
+          <HouseIcon sx={{ display: { xs: 'none', md: 'flex', fontSize: 45 }, mr: 0.5 }} onClick={() => navigate("/home")} />
           <Typography
             variant="h6"
             noWrap
@@ -146,7 +182,7 @@ function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-            onClick = {()=> navigate("/home")}
+            onClick={() => navigate("/home")}
           >
             Homly
           </Typography>
@@ -187,7 +223,7 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <HouseIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 2 }} onClick = {()=> navigate("/home")} />
+          <HouseIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 2 }} onClick={() => navigate("/home")} />
           <Typography
             variant="h5"
             noWrap
@@ -203,7 +239,7 @@ function ResponsiveAppBar() {
               color: 'white',
               textDecoration: 'none',
             }}
-            onClick = {()=> navigate("/home")}
+            onClick={() => navigate("/home")}
           >
             Homly
           </Typography>
@@ -249,6 +285,11 @@ function ResponsiveAppBar() {
 
                 <Typography textAlign="center">Register</Typography>
               </MenuItem>
+
+              {/* <MenuItem key="Register" onClick={()=> navigate("/registeration")}>
+
+                <Typography textAlign="center">Register</Typography>
+              </MenuItem> */}
             </Menu>
 
           </Box>}
@@ -270,22 +311,28 @@ function ResponsiveAppBar() {
         // Register Popup
         open={isRegisterOpen} onClose={handleClickCloseRegister} fullWidth maxWidth="sm"  >
 
-        <DialogTitle bgcolor={'black'} color={'white'}  fontFamily={'revert'} margin={1} >User Registeration <IconButton onClick={handleClickCloseRegister} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
+        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >User Registeration <IconButton onClick={handleClickCloseRegister} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
         <DialogContent >
-          {/* <DialogContentText>Do you want remove this user?</DialogContentText> */}
+
 
           <Stack spacing={2} margin={2}>
-            <TextField variant="outlined" label="Username" onChange={event => { setUserRegister(prev => { return { ...prev, username: event.target.value } })} }></TextField>
-            <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserRegister(prev => { return { ...prev, password: event.target.value } })} }></TextField>
-            <TextField variant="outlined" label="Email"   onChange={event => { setUserRegister(prev => { return { ...prev, email: event.target.value }})}}></TextField>
-            <TextField variant="outlined" label="profilePic"   onChange={event => { setUserRegister(prev => { return { ...prev, profilePic: event.target.value }})}} ></TextField>
+            <Box display={"flex"} justifyContent={'center'}>
+              <img src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
+            </Box>
+            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
+             <Button color="info" variant="contained"  onClick={selectImg}>Upload Profile Image</Button> 
+
+            <TextField variant="outlined" label="Username" onChange={event => { setUserRegister(prev => { return { ...prev, name: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserRegister(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" label="Email" onChange={event => { setUserRegister(prev => { return { ...prev, email: event.target.value } }) }}></TextField>
+            
+
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
-            <Button color="info" variant="contained"  onClick={SubmitRegisterEvent}>Submit</Button>
+            <Button color="info" variant="contained" onClick={SubmitRegisterEvent}>Submit</Button>
           </Stack>
         </DialogContent>
         <DialogActions>
-          {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+
         </DialogActions>
       </Dialog>
 
@@ -295,7 +342,6 @@ function ResponsiveAppBar() {
 
         <DialogTitle bgcolor={'lightskyblue'} color={'white'} fontFamily={'revert'} margin={1} >User Login  <IconButton onClick={handleClickCloseLogin} style={{ float: 'right' }}></IconButton>  </DialogTitle>
         <DialogContent>
-          {/* <DialogContentText>Do you want remove this user?</DialogContentText> */}
           <Stack spacing={2} margin={2}>
             <TextField variant="outlined" label="Email" onChange={event => { setUserLogin(prev => { return { ...prev, email: event.target.value } }) }}> </TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserLogin(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
@@ -304,8 +350,7 @@ function ResponsiveAppBar() {
           </Stack>
         </DialogContent>
         <DialogActions>
-          {/* <Button color="success" variant="contained">Yes</Button>
-                    <Button onClick={closepopup} color="error" variant="contained">Close</Button> */}
+
         </DialogActions>
       </Dialog>
 

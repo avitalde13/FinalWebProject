@@ -6,7 +6,7 @@ import FilterBar from "../components/Filters/FilterBar";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Slider from "../components/Filters/Slider";
-import { convertToObject } from "typescript";
+// import { convertToObject } from "typescript";
 import { Center } from "@chakra-ui/react";
 // import MultiActionAreaCard from "../components/AssetCard";
 import Navbar from "../components/NavBar";
@@ -95,7 +95,7 @@ const HomePage = () => {
 
         >
 
-          {assets.map((asset) => <Property asset={asset} key={asset._id} />)}
+          {assets && assets.map((asset) => <Property asset={asset} key={asset._id} />)}
         </Grid>
       </Grid>
 
