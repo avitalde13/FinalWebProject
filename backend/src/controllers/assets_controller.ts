@@ -36,6 +36,17 @@ class AssetsController{
         }
     }
 
+
+    async getAssetById(req: Request, res: Response) {
+    
+        try {
+            const assets = await Asset.findOne({_id: req.params.assetById});
+            res.send(assets);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
+
     async createAsset(req: Request, res: Response) {
      
         try {

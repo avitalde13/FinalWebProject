@@ -47,6 +47,17 @@ class AssetsController {
             }
         });
     }
+    getAssetById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const assets = yield assets_model_1.default.findOne({ _id: req.params.assetById });
+                res.send(assets);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
     createAsset(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

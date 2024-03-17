@@ -105,7 +105,6 @@ const createUser = (newUser) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("body", req.body);
     try {
         const user = yield createUser(req.body.user);
         res.status(200).json(user);
@@ -235,11 +234,9 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return res.status(401).send("username or password incorrect");
         }
         const match = yield bcrypt_1.default.compare(password, user.password);
-        console.log("1");
         if (!match) {
             return res.status(401).send("username or password incorrect");
         }
-        console.log("2");
         const today = new Date();
         const token = yield jsonwebtoken_1.default.sign({ id: user._id, createDate: today }, process.env.JWT_SECRET);
         return res.status(200).send({ 'accessToken': token });

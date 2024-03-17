@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
 
 export interface Asset {
-  // _id: mongoose.Schema.Types.ObjectId;
+  _id?: mongoose.Schema.Types.ObjectId;
   address: string;
   price: Number;
   imgSrc: string;
 }
 
 const assetSchema = new mongoose.Schema<Asset>({
-  // _id: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   required: true,
-  // },
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   address: {
     type: String,
     required: true,

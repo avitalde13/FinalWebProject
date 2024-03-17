@@ -86,12 +86,13 @@ const getUserByEmailHandler = async (req: Request, res: Response) => {
 const createUser = async (newUser: IUser) => {
     if (newUser) {
         try {
-            const { name, email, password } = newUser;
+            const { name, email, password, fileName } = newUser;
             if (!name || !email || !password) {
                 throw new Error("Name, email and password are required");
             }
             const hashedPassword = bcrypt.hashSync(password, 10);
             newUser.password = hashedPassword;
+            newUser.fileName = fileName || "default.jpg";
             const user = new User({ ...newUser });
             await user.save();
             return user;
@@ -108,6 +109,10 @@ const createUserHandler = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+
+
+
 
 
 const deleteUser = async (id: string) => {
@@ -253,8 +258,10 @@ const loginUser = async (req: Request, res: Response) => {
 const UserInfo = async (req: Request, res: Response) => {
     try {
         const userid = req.body.userId;
+  
 
-        const user = (await User.findOne({ _id:  userid }));
+        const user = (await User.findOne({ _id:  userid  }));
+
 
         return res.status(200).send( user );
     } catch (err) {
@@ -517,6 +524,7 @@ export default {
     getUserByEmailHandler,
     //   getUserDetails,
     createUserHandler,
+    
     deleteUserHandler,
     updateUserHandler,
     addAssetToUserHandler,

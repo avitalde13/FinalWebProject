@@ -6,7 +6,7 @@ export interface IUser {
   password: string;
   assets?: Types.ObjectId[];
   id?: string;
-  profilePic?: string;
+  fileName?: string;
   refreshToken?: string[];
 }
 
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
   ],
     default: [],
   },
-  profilePic: {
+  fileName: {
     type: String,
     default: "https://www.pngwing.com/en/free-png-zzjjb",
   },
