@@ -1,74 +1,75 @@
-// import jwt from "jsonwebtoken";
-// import bcrypt from "bcrypt";
-// import { Request, Response,NextFunction } from "express";
-// import user_model from "../models/user_model";
-// import User, {IUser} from "../models/user_model";
-// import {ObjectId} from "mongoose"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { Request, Response, NextFunction } from "express";
+import user_model from "../models/user_model";
+import User, { IUser } from "../models/user_model";
+import { Types } from "mongoose";
 
-// const getAllUsers = async (req:Request, res:Response) => {
-//         try {
-//                 const user = await User.find();
-//                 // res.status(200).json(users);
-//                 res.send(user);
-//         } catch (error) {
-//                 res.status(500).json({ message: error.message });
-//         }
-// };
+const getAllUsers = async (req: Request, res: Response) => {
+    try {
+        const user = await User.find();
+        // res.status(200).json(users);
+        res.send(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-// const getUserById = async (req: Request, res: Response) => {
-//   try {
-//     const { userId } = req.params.userId;
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-
+const getUserById = async (req: Request, res: Response) => {
+    try {
+        const userId = req.params.userId;
+        res.status(200).json(User);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 
-// const getUserByName = async (name:string) => {
-//     if (name) {
-//       try {
-//         const user = await User.findOne({ name });
-//         if (user) {
-//           return user;
-//         }
-//         return null;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Name is required");
-//   };
 
 
-//   const getUserByEmail = async (email:string) => {
-//   if (email) {
-//     try {
-//       const user = await User.findOne({ email });
-//       if (user) {
-//         return user;
-//       }
-//       return null;
-//     } catch (error) {
-//       throw new Error(error.message);
-//     }
-//   }
-//   throw new Error("Email is required");
-// };
-
-// const getUserByEmail = async (req:Request, res:Response) => {
-//     try {
-//       const user = await getUserByEmail(req.body.email);
-//       res.status(200).json(user);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   };
+const getUserByName = async (name: string) => {
+    if (name) {
+        try {
+            const user = await User.findOne({ name });
+            if (user) {
+                return user;
+            }
+            return null;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Name is required");
+};
 
 
-  
+
+const getUserByEmail = async (email: string) => {
+    if (email) {
+        try {
+            const user = await User.findOne({ email });
+            if (user) {
+                return user;
+            }
+            return null;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Email is required");
+};
+
+const getUserByEmailHandler = async (req: Request, res: Response) => {
+    try {
+        const user = await getUserByEmail(req.params.email);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 // const getUserDetails = async (req:Request, res:Response) => {
 //   try {
 //     const { token } = req.body;
@@ -82,129 +83,194 @@
 //   }
 // };
 
-// const createUser = async (user:IUser) => {
-//     if (user) {
-//       try {
-//         const { name, email, password } = user;
-//         if (!name || !email || !password) {
-//           throw new Error("Name, email and password are required");
-//         }
-//         if (await getUserByEmail(email)) {
-//           throw new Error("Email already exists");
-//         }
-//         //const id = (email+name).replace(/\s/g, '_');
-//         const newUser = new User({ ...user });
-//         await newUser.save();
-//         return newUser;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("User is required");
-//   };
+const createUser = async (newUser: IUser) => {
+    if (newUser) {
+        try {
+            const { name, email, password, fileName } = newUser;
+            if (!name || !email || !password) {
+                throw new Error("Name, email and password are required");
+            }
+            const hashedPassword = bcrypt.hashSync(password, 10);
+            newUser.password = hashedPassword;
+            newUser.fileName = fileName || "default.jpg";
+            const user = new User({ ...newUser });
+            await user.save();
+            return user;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+}
+const createUserHandler = async (req: Request, res: Response) => {
+    try {
+        const user = await createUser(req.body.user);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
-//   const createUser = async (req:Request, res:Response) => {
-//     try {
-//       const user = { ...req.body };
-//       user.name = user.name
-//         .split(" ")
-//         .map((s) => s.charAt(0).toUpperCase() + s.substring(1).toLowerCase())
-//         .join(" ");
-//       const salt = bcrypt.genSaltSync(10); // I ADDED CONST ?
-//       user.email = user.email.toLowerCase();
-//       user.password = bcrypt.hashSync(user.password, salt);
-//       const createdUser = await createUser(user);
-//       res.status(201).json(createdUser);
-//     } catch (error) {
-//       res.status(500).json({ message: error.message });
-//     }
-//   };
-
-//   const deleteUser = async (id:ObjectId) => {
-//     if (id) {
-//       try {
-//         const user = await User.findByIdAndDelete(id);
-//         if (user) {
-//           return user;
-//         }
-//         return null;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Id is required");
-//   };
-
-// const deleteUser = async (req:Request, res:Response) => {
-//   try {
-//     const user = await deleteUser(req.params.userId);
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 
-// const updateUser = async (id:ObjectId, newUser:IUser) => {
-//     if (id && newUser) {
-//       try {
-//         await User.findOneAndUpdate({ _id: id }, newUser);
-//         return newUser;
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//     throw new Error("Id and new user are required");
-//   };
 
-// const updateUser = async (req:Request, res:Response) => {
-//   try {
-//     const userIdParams = req.params.userId;
-//     const { token, updatedUser } = req.body;
-//     const decodedToken = jwt.decode(token);
-//     const userId = decodedToken.id;
-//     const user = await userService.getUserById(userId);
-//     if (updatedUser.name)
-//       updatedUser.name = updatedUser.name
-//         .split(" ")
-//         .map((s) => s.charAt(0).toUpperCase() + s.substring(1).toLowerCase())
-//         .join(" ");
-//     if (updatedUser.email) updatedUser.email = updatedUser.email.toLowerCase();
-//     const userAfterUpdate = await userService.updateUser(userId, updatedUser);
-//     userAfterUpdate.password = undefined;
-//     res.status(200).json({ message: "User updated successfully" });
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
-// const addSongsToUser = async (id:ObjectId, songs:ObjectId[]) => { // IS IT SONG []  OR SONGS ID [] ??? SONG/ObjectId
-//     if (id) {
-//       try {
-//         const user = await User.findById(id);
-//         if (user) {
-//           for (let i = 0; i < songs.length; i++) {
-//             user.songs.push(songs[i]);
-//           }
-//           await updateUser(id, user);
-//           return user;
-//         }
-//         throw new Error("User not found");
-//       } catch (error) {
-//         throw new Error(error.message);
-//       }
-//     }
-//   };
+const deleteUser = async (id: string) => {
+    if (id) {
+        try {
+            const user = await User.findByIdAndDelete(id);
+            if (user) {
+                return user;
+            }
+            throw new Error("User not found");
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Id is required");
 
-// const getUserSongs = async (req:Request, res:Response) => {
-//   try {
-//     const user = await getUserSongs(req.params.id);
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+}
+
+
+
+
+const deleteUserHandler = async (req: Request, res: Response) => {
+    try {
+        const user = await deleteUser(req.params.id);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const updateUser = async (id: string, user: IUser) => {
+    if (id) {
+        try {
+            const hashedPassword = bcrypt.hashSync(user.password, 10);
+            user.password = hashedPassword;
+            const updatedUser = await User.findByIdAndUpdate(id, user, { new: true });
+            if (updatedUser) {
+                return updatedUser;
+            }
+            throw new Error("User not found");
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Id is required");
+}
+
+const updateUserHandler = async (req: Request, res: Response) => {
+    try {
+        const user = await updateUser(req.params.id, req.body.user);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const addAssetToUser = async (id: Types.ObjectId, asset: Types.ObjectId) => {
+    if (id) {
+        try {
+            const user = await User.findById(id.toString());
+            if (user) {
+                if (user.assets.includes(asset)) {
+                    throw new Error("Asset already exists");
+                }
+                user.assets.push(asset);
+                await updateUser(id.toString(), user);
+                return user;
+            }
+            throw new Error("User not found");
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+}
+
+const addAssetToUserHandler = async (req: Request, res: Response) => {
+    try {
+        const user = await addAssetToUser(new Types.ObjectId(req.body.id), new Types.ObjectId(req.body.asset));
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+
+}
+
+const removeAssetFromUser = async (id: Types.ObjectId, asset: Types.ObjectId) => {
+    if (id) {
+        try {
+            const user = await User.findById(id.toString());
+            if (user) {
+                if (!user.assets.includes(asset)) {
+                    throw new Error("Asset does not exist");
+                }
+                user.assets = user.assets.filter((assetId) => assetId.toString() !== asset.toString());
+                await updateUser(id.toString(), user);
+                return user;
+            }
+            throw new Error("User not found");
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+}
+
+const removeAssetFromUserHandler = async (req: Request, res: Response) => {
+    try {
+        // const token = req.headers["Authorization"];
+        const user = await removeAssetFromUser(new Types.ObjectId(req.body.id), new Types.ObjectId(req.body.asset)); // add tokens and then can use params instead of body .
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+const loginUser = async (req: Request, res: Response) => {
+    console.log(req.body);
+    const email = req.body.email;
+    const password = req.body.password;
+    if (!email || !password) {
+        return res.status(400).send("missing username or password");
+    }    
+    try {
+        
+        const user = await User.findOne({email: email });
+        console.log(user);
+        if (user == null) {
+            return res.status(401).send("username or password incorrect");
+        }
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(401).send("username or password incorrect");
+        } 
+        const today = new Date();
+        const token = await jwt.sign({ id: user._id, createDate: today}, process.env.JWT_SECRET);
+        return res.status(200).send({ 'accessToken': token });
+    } catch (err) {
+        return res.status(400).send("error missing username or password");
+    }
+}
+
+const UserInfo = async (req: Request, res: Response) => {
+    try {
+        const userid = req.body.userId;
+  
+
+        const user = (await User.findOne({ _id:  userid  }));
+
+
+        return res.status(200).send( user );
+    } catch (err) {
+        return res.status(400).send("failed to get user info");
+    }
+}
+
+
+
 
 // const addSongsToUser = async (id:ObjectId, songs:ObjectId[]) => { // IS IT SONG []  OR SONGS ID [] ??? SONG/ObjectId
 //     if (id) {
@@ -266,7 +332,7 @@
 //       }
 //     }
 //   }
-  
+
 //   const addRefreshToken = async (id:ObjectId, refreshToken:string) => {
 //     if(id && refreshToken){
 //       try{
@@ -282,9 +348,9 @@
 //       }
 //     }
 //   }
-  
-  
-  
+
+
+
 
 // const removeSongFromUser = async (req:Request, res:Response) => {
 //   try {
@@ -350,7 +416,7 @@
 //       }
 //     }
 //   };
-  
+
 
 // const googleLogin = async (req:Request, res:Response) => {
 //   try {
@@ -451,34 +517,32 @@
 //   }
 // }
 
-// export default {
-//   getAllUsers,
-//   getUserById,
-//   getUserByName,
-//   getUserByEmail,
-//   getUserDetails,
-//   createUser,
-//   deleteUser,
-//   updateUser,
-//   getUserSongs,
-//   addSongToUser,
-//   removeSongFromUser,
-//   userLogin,
-//   checkSong,
-//   googleLogin,
-//   checkToken,
-//   isRefreshTokenExist,
-//   verifyRefreshToken,
-//   generateAccessToken,
-//   logout,
-//   addSongsToUser,
-//   createGoogleUser,
-//   removeRefreshTokens,
-//   removeRefreshToken,
-//   addRefreshToken
-// };
-
-
-  
-
-
+export default {
+    getAllUsers,
+    getUserById,
+    getUserByName,
+    getUserByEmailHandler,
+    //   getUserDetails,
+    createUserHandler,
+    
+    deleteUserHandler,
+    updateUserHandler,
+    addAssetToUserHandler,
+    removeAssetFromUserHandler,
+    loginUser,
+    UserInfo,
+    //   removeSongFromUser,
+    //   userLogin,
+    //   checkSong,
+    //   googleLogin,
+    //   checkToken,
+    //   isRefreshTokenExist,
+    //   verifyRefreshToken,
+    //   generateAccessToken,
+    //   logout,
+    //   addSongsToUser,
+    //   createGoogleUser,
+    //   removeRefreshTokens,
+    //   removeRefreshToken,
+    //   addRefreshToken
+};

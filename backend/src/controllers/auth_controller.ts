@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 const register = async (req: Request, res: Response) => {
     const email = req.body.email;
     const password = req.body.password;
+    const imgUrl = req.body.imgUrl;
     if (!email || !password) {
         return res.status(400).send("missing email or password");
     }

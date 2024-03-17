@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, {Types} from "mongoose";
 
 export interface IUser {
-  name: string;
+  name?: string;
   email: string;
   password: string;
-  assets?: string[];
+  assets?: Types.ObjectId[];
   id?: string;
-  profilePic?: string;
-  refreshToken: string[];
+  fileName?: string;
+  refreshToken?: string[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -18,12 +18,22 @@ const userSchema = new mongoose.Schema<IUser>({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   password: {
     type: String,
     required: true,
   },
-  profilePic: {
+  assets: {
+    type:   [
+      {
+     type:  mongoose.Schema.Types.ObjectId,
+      ref: "Asset",
+    }
+  ],
+    default: [],
+  },
+  fileName: {
     type: String,
     default: "https://www.pngwing.com/en/free-png-zzjjb",
   },

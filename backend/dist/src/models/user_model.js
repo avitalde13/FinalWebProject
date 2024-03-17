@@ -12,12 +12,22 @@ const userSchema = new mongoose_1.default.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,
         required: true,
     },
-    profilePic: {
+    assets: {
+        type: [
+            {
+                type: mongoose_1.default.Schema.Types.ObjectId,
+                ref: "Asset",
+            }
+        ],
+        default: [],
+    },
+    imgUrl: {
         type: String,
         default: "https://www.pngwing.com/en/free-png-zzjjb",
     },

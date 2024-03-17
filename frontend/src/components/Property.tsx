@@ -1,4 +1,4 @@
-import { Box, Flex, Image, Text, Avatar, Link } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, Avatar, Link, Center } from '@chakra-ui/react';
 
 import * as React from 'react';
 import Card from '@mui/material/Card';
@@ -27,19 +27,21 @@ const Property = (props: Props) => {
     // );
 
     return (
-        <Card sx={{ maxWidth: 345, paddingRight: 10 }}>
+        <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1}} >
           <CardActionArea>
+            
             
             <CardMedia
               component="img"
-              height="140"
+              height="150"
               image={props.asset.imgSrc}
               alt="green iguana"
             />
             <CardContent>
               
-              <Typography gutterBottom variant="h5"  justifyContent={"center"} component="div">
-                Price: {props.asset.price}
+              
+              <Typography gutterBottom variant="h5"  justifyContent={"center"} component="div" >
+                Price: {props.asset.price} $
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Address: {props.asset.address}  
