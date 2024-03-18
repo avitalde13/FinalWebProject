@@ -1,15 +1,16 @@
 import mongoose from "mongoose";
+import { Types } from "mongoose";
 
-export interface Asset {
-  _id?: mongoose.Schema.Types.ObjectId;
+export interface IAsset {
+  id?: string;
   address: string;
   price: Number;
   imgSrc: string;
 }
 
-const assetSchema = new mongoose.Schema<Asset>({
-  _id: {
-    type: mongoose.Schema.Types.ObjectId,
+const assetSchema = new mongoose.Schema<IAsset>({
+  id: {
+    type: String,
   },
   address: {
     type: String,
@@ -25,4 +26,4 @@ const assetSchema = new mongoose.Schema<Asset>({
   },
 });
 
-export default mongoose.model<Asset>("assets", assetSchema);
+export default mongoose.model<IAsset>("Asset", assetSchema);

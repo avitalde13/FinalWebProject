@@ -21,8 +21,8 @@ const UserProfile = () => {
         const userdata = await response.json();
         console.log("1", userdata.assets);
         userdata.assets.forEach((asset) => {
-         fetchAssetData(asset);
-          
+          fetchAssetData(asset);
+
         });
         setUser(userdata);
       } catch (error) {
@@ -35,7 +35,7 @@ const UserProfile = () => {
 
     const fetchAssetData = async (assetId) => {
       try {
-        const response = await fetch('http://localhost:3000/assets/'+ assetId, {
+        const response = await fetch('http://localhost:3000/assets/' + assetId, {
           headers: {
             'Content-Type': 'application/json'
           },
@@ -49,7 +49,7 @@ const UserProfile = () => {
       }
     };
 
-  
+
   }, []);
 
   if (!user) {
@@ -60,31 +60,51 @@ const UserProfile = () => {
     <div>
       <Navbar />
       <Container maxWidth="xl" sx={{ mt: 4 }}>
-        <Typography variant="h3" align="center" gutterBottom fontFamily={'cursive'} bgcolor={'grey'}>
+        <Typography variant="h2" align="center" gutterBottom fontFamily={'cursive'} bgcolor={'Highlight'} height={80}>
           User Profile
         </Typography>
         <Divider />
 
-        <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  profilePic
-                </Typography>
-                <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }}/>
-              </CardContent>
-            </Card>
-          </Grid>
 
 
-        <Grid container spacing={3} sx={{ mt: 3 }}>
-          <Grid item xs={12}>
-            <Card>
+        <Grid item xs={12} container direction="row"   justifyContent="left" alignItems='baseline' >
+
+          <Card >
+            <CardContent >
+              <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
+                Profile Picture
+              </Typography>
+              <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
+            </CardContent>
+          </Card>
+
+
+          <Grid item xs={12}  justifyContent="center" alignItems="center" >
+          <Card>
               <CardContent>
-                <Typography variant="h6" gutterBottom>
+              <Typography variant="h6" gutterBottom  fontFamily={'unset'} bgcolor={'Highlight'}>
                   User Name
                 </Typography>
-                <Typography variant="body1">{user.name}</Typography>
+                <Typography variant="body1">
+                  {user.name}
+                </Typography>
+              </CardContent>
+            </Card>
+            </Grid>
+
+
+        </Grid>
+
+        <Grid container spacing={3} sx={{ mt: 3 }}>
+          <Grid item xs={12}  justifyContent="center" alignItems="center" >
+            <Card>
+              <CardContent>
+              <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
+                  User Name
+                </Typography>
+                <Typography variant="body1">
+                  {user.name}
+                </Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -99,8 +119,8 @@ const UserProfile = () => {
               </CardContent>
             </Card>
           </Grid>
-          
-          <Grid item xs={12}  container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} display={"flex"} flexDirection={"column"}>
+
+          <Grid item xs={12} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} display={"flex"} flexDirection={"column"}>
             <Card >
               <CardContent>
                 <Typography variant="h6" gutterBottom>

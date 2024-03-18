@@ -8,11 +8,15 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import AddIcon from '@mui/icons-material/Add';
+
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HouseIcon from '@mui/icons-material/House';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, Stack, TextField } from '@mui/material';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, FormControlLabel, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 
 import { createTheme, alpha, getContrastRatio } from '@mui/material/styles';
@@ -24,6 +28,7 @@ import { uploadPhoto } from '../services/file-service';
 
 import avatar from '../assets/avatar.png'
 import { unstable_renderSubtreeIntoContainer } from 'react-dom';
+import { title } from 'process';
 
 
 //design
@@ -39,6 +44,14 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+
+  const [isRegisterOpen, setOpenRegister] = React.useState(false);
+  const [isLoginOpen, setOpenLogin] = React.useState(false);
+  const [userLogin, setUserLogin] = React.useState({ email: "", password: "" });
+  const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "" });
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [imgSrc, setImgSrc] = React.useState<File>();
+  const [alert, setAlert] = React.useState(false);
 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -62,23 +75,13 @@ function ResponsiveAppBar() {
   };
 
 
-
-  const [isRegisterOpen, setOpenRegister] = React.useState(false);
-  const [isLoginOpen, setOpenLogin] = React.useState(false);
-  const [userLogin, setUserLogin] = React.useState({ email: "", password: "" });
-  const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "" });
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [imgSrc, setImgSrc] = React.useState<File>();
-
-
-
-
-
   const handleClickOpenRegister = () => {
     setOpenRegister(true);
+    setAnchorElUser(null);
   };
   const handleClickOpenLogin = () => {
     setOpenLogin(true);
+    setAnchorElUser(null);
   };
   const handleClickCloseRegister = () => {
     setOpenRegister(false);
@@ -98,46 +101,32 @@ function ResponsiveAppBar() {
     }
   }
 
-//   const uploadPhoto = async (imgSrc: File) => {                                                            ?????
-//     return new Promise<string>((resolve, reject) => {
-//         console.log("Uploading photo..." + imgSrc)
-//         const formData = new FormData();
-//         let imagePath = "";
-//         if (imgSrc) {
-//             formData.append("file", imgSrc);
-//             axios.post('http://localhost:3000/file/upload').then(res => {
-//                 console.log(res);
-//                 imagePath = `http://localhost:3000/${res.data.file.path}`;
-//                 resolve(res.data.url);
-//             }).catch(err => {
-//                 console.log(err);
-//                 reject(err);
-//             });
-//         }
-//     });
-// }
-
   const SubmitRegisterEvent = async () => {
 
     console.log(userRegister);
-     await uploadPhoto(imgSrc!);
+    await uploadPhoto(imgSrc!);
     // console.log(url);
-    
-    const accessToken = await axios.post('http://localhost:3000/users/register', { user: userRegister}).then(res => res.data);
-    if (accessToken) {
-      localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
-     
-      setIsLoggedIn(true);
-      setOpenRegister(false);
-
-    }
+    await axios.post('http://localhost:3000/users/register', { user: userRegister }).then(res => res.data);
+    // setIsLoggedIn(true);
+    setOpenRegister(false);
+    setAlert(true);
   }
+
+  // const addAsset = async () => {
+  //   await axios.post('http://localhost:3000/assets/addAsset').then(res => res.data);  // creat asset
+  //   await axios.post('http://localhost:3000/users/addAssetToUser/').then(res => res.data);  // add asset to user
+
+
+  // }
+
+
+
 
   const imgSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value)
     if (e.target.files && e.target.files.length > 0) {
       setImgSrc(e.target.files[0])
-      setUserRegister(prev => { return { ...prev, fileName: e.target.files[0].name  } })
+      setUserRegister(prev => { return { ...prev, fileName: e.target.files[0].name } })
     }
   }
   const selectImg = () => {
@@ -145,10 +134,10 @@ function ResponsiveAppBar() {
     fileInputRef.current?.click()
   }
 
-
   const deleteToken = () => {
     localStorage.removeItem('accessToken');
     setIsLoggedIn(false);
+    navigate("/home");
   }
 
   React.useEffect(() => {
@@ -157,8 +146,6 @@ function ResponsiveAppBar() {
       setIsLoggedIn(true);
     }
   }, []);
-
-
 
 
 
@@ -293,14 +280,29 @@ function ResponsiveAppBar() {
             </Menu>
 
           </Box>}
+
           {isLoggedIn && <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
+
+            <Tooltip title="Add Asset" >
+              <MenuItem key="Add">
+                <Fab size="medium" color="primary" aria-label="add" >
+                  <AddIcon></AddIcon>
+              
+                </Fab>
+              </MenuItem>
+            </Tooltip>
+
+
+
+            <MenuItem key="Profile" onClick={() => navigate("/profile")}>
+              <Typography textAlign="center">Profile</Typography>
+            </MenuItem>
+
 
             <MenuItem key="Logout" onClick={deleteToken}>
               <Typography textAlign="center">Logout</Typography>
             </MenuItem>
-            <MenuItem key="Profile" onClick={() => navigate("/profile")}>
-              <Typography textAlign="center">Profile</Typography>
-            </MenuItem>
+
           </Box>}
 
 
@@ -314,27 +316,30 @@ function ResponsiveAppBar() {
         <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >User Registeration <IconButton onClick={handleClickCloseRegister} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
         <DialogContent >
 
-
           <Stack spacing={2} margin={2}>
             <Box display={"flex"} justifyContent={'center'}>
               <img src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-             <Button color="info" variant="contained"  onClick={selectImg}>Upload Profile Image</Button> 
+            <Button color="info" variant="contained" onClick={selectImg}>Upload Profile Image</Button>
 
             <TextField variant="outlined" label="Username" onChange={event => { setUserRegister(prev => { return { ...prev, name: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserRegister(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Email" onChange={event => { setUserRegister(prev => { return { ...prev, email: event.target.value } }) }}></TextField>
-            
 
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
             <Button color="info" variant="contained" onClick={SubmitRegisterEvent}>Submit</Button>
           </Stack>
         </DialogContent>
         <DialogActions>
-
         </DialogActions>
       </Dialog>
+
+      <Collapse in={alert}>
+        <Alert variant="filled" severity="success">
+          Registerd successfully. Please login to continue.
+        </Alert>
+      </Collapse>
 
       <Dialog
         // Login Popup

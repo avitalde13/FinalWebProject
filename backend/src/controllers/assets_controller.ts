@@ -1,22 +1,21 @@
 import { Request, Response } from "express";
 import { Model } from "mongoose";
-import Asset from "../models/assets_model";
+import Asset, { IAsset } from "../models/assets_model";
 import auth from "../common/auth_middleware";
 
 
-class AssetsController{
+   const getAllAssets = async (req: Request, res: Response) => {
 
-    async getAllAssets(req: Request, res: Response) {
-    
         try {
             const assets = await Asset.find();
             res.send(assets);
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    };
 
-    async getAssetsByAddress(req: Request, res: Response) {
+
+    const getAssetsByAddress=  async(req: Request, res: Response) => {
     
         try {
             const assets = await Asset.find({address: req.params.address});
@@ -24,9 +23,9 @@ class AssetsController{
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    };
 
-    async getAssetsByPrice(req: Request, res: Response) {
+    const getAssetsByPrice= async (req: Request, res: Response) => {
     
         try {
             const assets = await Asset.find({price: req.params.price});
@@ -34,10 +33,10 @@ class AssetsController{
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    };
 
 
-    async getAssetById(req: Request, res: Response) {
+    const getAssetById= async (req: Request, res: Response) => {
     
         try {
             const assets = await Asset.findOne({_id: req.params.assetById});
@@ -45,24 +44,48 @@ class AssetsController{
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
+    };
+
+
+    const createAsset= async(newAsset: IAsset)=>{
+        try{
+            const {address, price, imgSrc} = newAsset;
+            if (!address || !price || !imgSrc) {
+                throw new Error("Please provide all the required fields");
+            }
+            const asset = new Asset({...newAsset});
+            await asset.save();
+            return asset;
+        }catch(err){    
+            throw new Error(err.message);
+        }
     }
 
-    async createAsset(req: Request, res: Response) {
-     
+    const createAssetHandler = async(req: Request, res: Response) => {
         try {
-            const assetBody = {
-                address: req.body.address,
-                price: req.body.price,
-                imgSrc: req.body.imgSrc
-            }
-            const asset = new Asset(assetBody);
-            asset.save();
-            res.send(asset);
+            const asset = await createAsset(req.body.asset);
+            res.status(200).json(asset);
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
     }
-    async deleteAsset(req: Request, res: Response) {
+    // const createAsset= async(req: Request, res: Response) => {
+    //     try {
+    //         const assetBody = {
+    //             address: req.body.address,
+    //             price: req.body.price,
+    //             imgSrc: req.body.imgSrc
+    //         }
+    //         console.log(assetBody);
+    //         const asset = new Asset(assetBody);
+    //         console.log(asset); 
+    //         asset.save();
+    //         res.send(asset);
+    //     } catch (err) {
+    //         res.status(500).json({ message: err.message });
+    //     }
+    // };
+    const deleteAsset = async(req: Request, res: Response) => {
 
         try {
             const asset_id = req.query.assetId
@@ -72,9 +95,9 @@ class AssetsController{
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    };
 
-    async updateAsset(req: Request, res: Response) {
+    const updateAsset= async(req: Request, res: Response) => {
      
         const asset_id = req.query.assetId
         try {
@@ -92,11 +115,17 @@ class AssetsController{
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
-    }
+    };
 
     
 
-
-}
-
-export default new AssetsController;
+export default {
+    getAllAssets,
+    getAssetsByAddress,
+    getAssetsByPrice,
+    getAssetById,
+    createAssetHandler,
+    // createAsset,
+    deleteAsset,
+    updateAsset
+};

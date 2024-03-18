@@ -89,12 +89,13 @@ const getUserByEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, fu
 const createUser = (newUser) => __awaiter(void 0, void 0, void 0, function* () {
     if (newUser) {
         try {
-            const { name, email, password } = newUser;
+            const { name, email, password, fileName } = newUser;
             if (!name || !email || !password) {
                 throw new Error("Name, email and password are required");
             }
             const hashedPassword = bcrypt_1.default.hashSync(password, 10);
             newUser.password = hashedPassword;
+            newUser.fileName = fileName || "default.jpg";
             const user = new user_model_1.default(Object.assign({}, newUser));
             yield user.save();
             return user;

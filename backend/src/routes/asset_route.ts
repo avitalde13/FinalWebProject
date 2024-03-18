@@ -8,7 +8,7 @@ router
     .get("/", AssetsController.getAssetsByPrice.bind(AssetsController))
     .get("/:assetById", AssetsController.getAssetById.bind(AssetsController))
 
-router.post("/", AssetsController.createAsset.bind(AssetsController));
+router.post("/", AssetsController.createAssetHandler.bind(AssetsController));
 router.delete("/", AssetsController.deleteAsset.bind(AssetsController));
 router.put("/", AssetsController.updateAsset.bind(AssetsController));
 

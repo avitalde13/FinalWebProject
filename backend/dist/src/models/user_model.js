@@ -27,7 +27,7 @@ const userSchema = new mongoose_1.default.Schema({
         ],
         default: [],
     },
-    imgUrl: {
+    fileName: {
         type: String,
         default: "https://www.pngwing.com/en/free-png-zzjjb",
     },
