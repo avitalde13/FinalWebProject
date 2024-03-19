@@ -11,6 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import AddIcon from '@mui/icons-material/Add';
+import homeAvatar from '../assets/homeAvatar.png'
 
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
@@ -51,7 +52,11 @@ function ResponsiveAppBar() {
   const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "" });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [imgSrc, setImgSrc] = React.useState<File>();
-  const [alert, setAlert] = React.useState(false);
+  const [alertPop, setAlertPop] = React.useState(false);
+
+
+  const [isAddAssetOpen, setOpenAddAsset] = React.useState(false);
+  const [addAssetToUser, setAsset] = React.useState({ address: "", price: "", fileName: "" });
 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -74,11 +79,20 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleClickOpenAddAsset = () => {
+    setOpenAddAsset(true);
+  }
+  const handleClickCloseAddAsset = () => {
+    setOpenAddAsset(false);
+  }
+
 
   const handleClickOpenRegister = () => {
     setOpenRegister(true);
     setAnchorElUser(null);
   };
+
+  
   const handleClickOpenLogin = () => {
     setOpenLogin(true);
     setAnchorElUser(null);
@@ -91,10 +105,10 @@ function ResponsiveAppBar() {
   };
 
   const SubmitLoginEvent = async () => {
-    const accessToken = await axios.post('http://localhost:3000/users/login', userLogin).then(res => res.data);
+    const accessToken = await axios.post('http://localhost:3000/users/login', userLogin).catch(err => alert(err));
 
     if (accessToken) {
-      localStorage.setItem('accessToken', JSON.stringify(accessToken.accessToken));
+      localStorage.setItem('accessToken', JSON.stringify(accessToken.data.accessToken));
       setIsLoggedIn(true);
       setOpenLogin(false);
 
@@ -109,15 +123,30 @@ function ResponsiveAppBar() {
     await axios.post('http://localhost:3000/users/register', { user: userRegister }).then(res => res.data);
     // setIsLoggedIn(true);
     setOpenRegister(false);
-    setAlert(true);
+    setAlertPop(true);
   }
 
-  // const addAsset = async () => {
-  //   await axios.post('http://localhost:3000/assets/addAsset').then(res => res.data);  // creat asset
-  //   await axios.post('http://localhost:3000/users/addAssetToUser/').then(res => res.data);  // add asset to user
+  const addAsset = async () => {
+  
+    await uploadPhoto(imgSrc!);
+    const response = await axios.post('http://localhost:3000/assets/addAsset', {asset: addAssetToUser}).then(res => res.data);  // creat asset
+    
+    const asset_id = await response._id;
 
+    const user_id = await axios.get('http://localhost:3000/users/info', {
+      headers: {
+        'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+    }}).then(res => res.data);  // get user id
 
-  // }
+  
+    const user = await user_id._id;
+    const body = {
+      "asset": asset_id,
+      "id": user
+  }
+    await axios.post('http://localhost:3000/users/addAssetToUser/',body).then(res => res.data);  // add asset to user
+    setOpenAddAsset(false);
+  }
 
 
 
@@ -127,6 +156,7 @@ function ResponsiveAppBar() {
     if (e.target.files && e.target.files.length > 0) {
       setImgSrc(e.target.files[0])
       setUserRegister(prev => { return { ...prev, fileName: e.target.files[0].name } })
+      setAsset(prev => { return { ...prev, fileName: e.target.files[0].name } })
     }
   }
   const selectImg = () => {
@@ -283,7 +313,7 @@ function ResponsiveAppBar() {
 
           {isLoggedIn && <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
 
-            <Tooltip title="Add Asset" >
+            <Tooltip title="Add Asset"  onClick={handleClickOpenAddAsset}>
               <MenuItem key="Add">
                 <Fab size="medium" color="primary" aria-label="add" >
                   <AddIcon></AddIcon>
@@ -309,6 +339,29 @@ function ResponsiveAppBar() {
 
         </Toolbar>
       </Container>
+      	
+      <Dialog
+        // Add Asset Popup
+        open={isAddAssetOpen} onClose={handleClickCloseAddAsset} fullWidth maxWidth="sm"  >
+        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Add Asset<IconButton onClick={handleClickCloseAddAsset} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
+        <DialogContent >
+          <Stack spacing={2} margin={2}>
+            <Box display={"flex"} justifyContent={'center'}>
+              <img src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
+            </Box>
+            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
+            <Button color="info" variant="contained" onClick={selectImg}>Upload Asset Image</Button>
+            <TextField variant="outlined" label="Address" onChange={event => { setAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" label="Price" onChange={event => { setAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>
+            <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
+            <Button color="info" variant="contained" onClick={addAsset}>Submit</Button>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+        </DialogActions>
+      </Dialog>
+
+
       <Dialog
         // Register Popup
         open={isRegisterOpen} onClose={handleClickCloseRegister} fullWidth maxWidth="sm"  >
@@ -335,7 +388,7 @@ function ResponsiveAppBar() {
         </DialogActions>
       </Dialog>
 
-      <Collapse in={alert}>
+      <Collapse in={alertPop}>
         <Alert variant="filled" severity="success">
           Registerd successfully. Please login to continue.
         </Alert>

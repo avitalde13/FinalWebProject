@@ -5,7 +5,7 @@ export interface IAsset {
   id?: string;
   address: string;
   price: Number;
-  imgSrc: string;
+  fileName: string;
 }
 
 const assetSchema = new mongoose.Schema<IAsset>({
@@ -20,7 +20,7 @@ const assetSchema = new mongoose.Schema<IAsset>({
     type: Number,
     required: true,
   },
-  imgSrc: {
+  fileName: {
     type: String,
     required: true,
   },

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Divider, Card, CardContent, Grid } from "@mui/material";
+import { Container, Typography, Divider, Card, CardContent, Grid, Box , Fab} from "@mui/material";
 import Navbar from "../components/NavBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { assert } from "console";
 import Property from "../components/Property";
+import EditIcon from '@mui/icons-material/Edit';
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -57,62 +58,54 @@ const UserProfile = () => {
   }
 
   return (
-    <div>
+    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', height: '100vh'}} >
       <Navbar />
-      <Container maxWidth="xl" sx={{ mt: 4 }}>
-        <Typography variant="h2" align="center" gutterBottom fontFamily={'cursive'} bgcolor={'Highlight'} height={80}>
-          User Profile
-        </Typography>
-        <Divider />
 
+      <Grid container
+        justifyContent="center"  >
 
-
-        <Grid item xs={12} container direction="row"   justifyContent="left" alignItems='baseline' >
-
-          <Card >
-            <CardContent >
-              <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
-                Profile Picture
-              </Typography>
-              <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
-            </CardContent>
-          </Card>
-
-
-          <Grid item xs={12}  justifyContent="center" alignItems="center" >
-          <Card>
-              <CardContent>
-              <Typography variant="h6" gutterBottom  fontFamily={'unset'} bgcolor={'Highlight'}>
-                  User Name
-                </Typography>
-                <Typography variant="body1">
-                  {user.name}
-                </Typography>
-              </CardContent>
-            </Card>
-            </Grid>
-
-
+        <Grid item xs={12} container justifyContent="center" alignItems="center" bgcolor={'Highlight'} >
+          <Typography variant="h3" align="center" gutterBottom fontFamily={'cursive'} paddingTop={2} >
+            User Profile
+          </Typography>
         </Grid>
 
-        <Grid container spacing={3} sx={{ mt: 3 }}>
-          <Grid item xs={12}  justifyContent="center" alignItems="center" >
-            <Card>
-              <CardContent>
-              <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
-                  User Name
+
+        <Grid container maxWidth={'70rem'} justifyContent={'center'} alignItems={'center'} display={'flex'}>
+          <Grid item xs={6} container direction="row" alignItems='baseline' >
+            <Card >
+              <CardContent >
+                <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
+                  Profile Picture
                 </Typography>
-                <Typography variant="body1">
-                  {user.name}
-                </Typography>
+                <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
               </CardContent>
             </Card>
           </Grid>
 
-          <Grid item xs={12}>
+
+
+          <Grid item xs={6} justifyContent="center" alignItems="center" >
+            <Grid item xs={12} container justifyContent={'right'} >
+              <Fab size="small" color="primary" aria-label="edit"   >
+                <EditIcon />
+              </Fab>
+            </Grid>
+
             <Card>
               <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="h6" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'}>
+                  User Name
+                </Typography>
+                <Typography variant="body1">
+                  {user.name}
+                </Typography>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'}>
                   Email
                 </Typography>
                 <Typography variant="body1">{user.email}</Typography>
@@ -120,20 +113,34 @@ const UserProfile = () => {
             </Card>
           </Grid>
 
-          <Grid item xs={12} container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }} display={"flex"} flexDirection={"column"}>
-            <Card >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  User Assets
-                </Typography>
-                <Typography variant="body1" >  {assets && assets.map((asset) => <Property asset={asset} key={asset._id} />)}</Typography>
-              </CardContent>
-            </Card>
+          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'} paddingTop={2} bgcolor={'highlight'} margin={5}>
+            User Assets
+          </Typography>
+
+
+          <Grid item xs={12} container justifyContent="center" alignItems="center" >
+            <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'} maxWidth={'60rem'}>
+              {assets ? assets.map((asset) =>
+                <Property asset={asset} key={asset._id} />) : <h1>No Assets</h1>}
+            </Box>
           </Grid>
+
+
         </Grid>
-      </Container>
+
+
+
+
+      </Grid>
+
+
+
+
+
     </div>
   );
 };
 
 export default UserProfile;
+
+

@@ -47,10 +47,11 @@ import auth from "../common/auth_middleware";
     };
 
 
+
     const createAsset= async(newAsset: IAsset)=>{
         try{
-            const {address, price, imgSrc} = newAsset;
-            if (!address || !price || !imgSrc) {
+            const {address, price, fileName} = newAsset;
+            if (!address || !price || !fileName) {
                 throw new Error("Please provide all the required fields");
             }
             const asset = new Asset({...newAsset});
