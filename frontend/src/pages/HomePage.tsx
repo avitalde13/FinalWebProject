@@ -1,16 +1,11 @@
-import { Card, CssBaseline, Divider, Grid, List, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import Property from "../components/Property";
-// import { TApiResponse, useApiGet } from "../utils/useFetchApi";
 import LoadingSpinner from "../components/LoadingSpinner";
-import FilterBar from "../components/Filters/FilterBar";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Slider from "../components/Filters/Slider";
-// import { convertToObject } from "typescript";
-import { Center } from "@chakra-ui/react";
-// import MultiActionAreaCard from "../components/AssetCard";
+
+
 import Navbar from "../components/NavBar";
-import { px } from "framer-motion";
+
 const HomePage = () => {
   const [assets, setAssets] = useState([]);
 

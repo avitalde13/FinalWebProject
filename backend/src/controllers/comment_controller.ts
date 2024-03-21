@@ -27,7 +27,7 @@ class CommentsController{
   }
 
   async getCommentByAssetId(req: Request, res: Response) {
-    console.log("getCommentByAssetId");
+   
     try {
         const Comments = await Comment.find({assetId: req.query.assetId});
         res.send(Comments);

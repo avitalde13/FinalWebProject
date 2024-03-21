@@ -1,4 +1,3 @@
-import { Box, Flex, Image, Text, Avatar, Link, Center } from '@chakra-ui/react';
 
 import * as React from 'react';
 import Card from '@mui/material/Card';

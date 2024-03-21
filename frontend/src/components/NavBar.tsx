@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
+
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,24 +17,22 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import HouseIcon from '@mui/icons-material/House';
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, FormControlLabel, Stack, TextField } from '@mui/material';
-import { useState } from 'react';
+import { Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fab, FormControlLabel, Stack, TextField } from '@mui/material';
 
-import { createTheme, alpha, getContrastRatio } from '@mui/material/styles';
-import { color } from '@chakra-ui/react';
+
+
 import axios from 'axios';
-import { json } from 'stream/consumers';
+
 import { useNavigate } from "react-router-dom";
 import { uploadPhoto } from '../services/file-service';
 
 import avatar from '../assets/avatar.png'
-import { unstable_renderSubtreeIntoContainer } from 'react-dom';
-import { title } from 'process';
 
 
-//design
-const violetBase = '#7F00FF';
-const violetMain = alpha(violetBase, 0.7);
+
+
+
+
 
 
 
@@ -45,6 +43,8 @@ function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null)
+
+  const fileInputRef2 = React.useRef<HTMLInputElement>(null)
 
   const [isRegisterOpen, setOpenRegister] = React.useState(false);
   const [isLoginOpen, setOpenLogin] = React.useState(false);
@@ -67,9 +67,6 @@ function ResponsiveAppBar() {
   };
 
 
-  const openRegister = () => {
-    console.log("register")
-  }
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -121,9 +118,12 @@ function ResponsiveAppBar() {
     await uploadPhoto(imgSrc!);
     // console.log(url);
     await axios.post('http://localhost:3000/users/register', { user: userRegister }).then(res => res.data);
-    // setIsLoggedIn(true);
+    // setIsLoggedIn(true
     setOpenRegister(false);
     setAlertPop(true);
+    setTimeout(() => {
+      navigate(0);
+    }, 2000);
   }
 
   const addAsset = async () => {
@@ -156,12 +156,29 @@ function ResponsiveAppBar() {
     if (e.target.files && e.target.files.length > 0) {
       setImgSrc(e.target.files[0])
       setUserRegister(prev => { return { ...prev, fileName: e.target.files[0].name } })
-      setAsset(prev => { return { ...prev, fileName: e.target.files[0].name } })
     }
   }
-  const selectImg = () => {
+
+
+  const imgSelected2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
+    if (e.target.files && e.target.files.length > 0) {
+      setImgSrc(e.target.files[1])
+      setAsset(prev => { return { ...prev, fileName: e.target.files[1].name } })
+    }
+  }
+
+
+
+  const selectImg = () => {   //register
     console.log("Selecting image...")
     fileInputRef.current?.click()
+  }
+
+
+  const selectImg2 = () => {
+    console.log("Selecting image...")
+    fileInputRef2.current?.click()
   }
 
   const deleteToken = () => {
@@ -347,10 +364,10 @@ function ResponsiveAppBar() {
         <DialogContent >
           <Stack spacing={2} margin={2}>
             <Box display={"flex"} justifyContent={'center'}>
-              <img src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
+              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
-            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-            <Button color="info" variant="contained" onClick={selectImg}>Upload Asset Image</Button>
+            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected2}></input>
+            <Button color="info" variant="contained" onClick={selectImg2}>Upload Asset Image</Button>
             <TextField variant="outlined" label="Address" onChange={event => { setAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Price" onChange={event => { setAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
@@ -371,7 +388,7 @@ function ResponsiveAppBar() {
 
           <Stack spacing={2} margin={2}>
             <Box display={"flex"} justifyContent={'center'}>
-              <img src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
+              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
             <Button color="info" variant="contained" onClick={selectImg}>Upload Profile Image</Button>
@@ -381,7 +398,7 @@ function ResponsiveAppBar() {
             <TextField variant="outlined" label="Email" onChange={event => { setUserRegister(prev => { return { ...prev, email: event.target.value } }) }}></TextField>
 
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
-            <Button color="info" variant="contained" onClick={SubmitRegisterEvent}>Submit</Button>
+            <Button color="info" variant="contained" onClick={SubmitRegisterEvent} >Submit</Button>
           </Stack>
         </DialogContent>
         <DialogActions>
@@ -404,7 +421,7 @@ function ResponsiveAppBar() {
             <TextField variant="outlined" label="Email" onChange={event => { setUserLogin(prev => { return { ...prev, email: event.target.value } }) }}> </TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserLogin(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Stay Logged In"></FormControlLabel>
-            <Button color="primary" variant="contained" onClick={SubmitLoginEvent}>Submit</Button>
+            <Button color="primary" variant="contained" onClick={SubmitLoginEvent} >Submit</Button>
           </Stack>
         </DialogContent>
         <DialogActions>
