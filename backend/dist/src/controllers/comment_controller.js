@@ -40,7 +40,6 @@ class CommentsController {
     }
     getCommentByAssetId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getCommentByAssetId");
             try {
                 const Comments = yield comment_model_1.default.find({ assetId: req.query.assetId });
                 res.send(Comments);

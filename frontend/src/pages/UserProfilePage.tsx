@@ -213,8 +213,9 @@ const UserProfile = () => {
             <Box display={"flex"} justifyContent={'center'}>
               <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
+      
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-            <Button color="info" variant="contained" onClick={selectImg}>Upload New Profile  Image</Button>
+            <Button color="info" variant="contained" onClick={selectImg}>Upload New Profile Image</Button>
             <TextField variant="outlined" label="Username" onChange={event => { setEditUser(prev => { return { ...prev, name: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setEditUser(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Email" onChange={event => { setEditUser(prev => { return { ...prev, email: event.target.value } }) }}></TextField>

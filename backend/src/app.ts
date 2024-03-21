@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 import assetRoute from "./routes/asset_route";
 import commentRoute from "./routes/comment_route";
 import userRoute from "./routes/user_route";
-import authRoute from "./routes/auth_route";
+
 import fileRoute from "./routes/file_route";
 import  cors from "cors";
 
@@ -34,7 +34,6 @@ const initApp = (): Promise<Express> => {
       app.use(cors());
       app.use("/comments", commentRoute);
       app.use("/assets", assetRoute);
-      app.use("/auth", authRoute);
       app.use("/users", userRoute); 
       app.use ("/file", fileRoute);
       app.use ("/public", express.static("public"));

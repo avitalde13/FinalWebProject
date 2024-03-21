@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const assetSchema = new mongoose_1.default.Schema({
-    _id: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+    id: {
+        type: String,
     },
     address: {
         type: String,
@@ -16,10 +16,10 @@ const assetSchema = new mongoose_1.default.Schema({
         type: Number,
         required: true,
     },
-    imgSrc: {
+    fileName: {
         type: String,
         required: true,
     },
 });
-exports.default = mongoose_1.default.model("assets", assetSchema);
+exports.default = mongoose_1.default.model("Asset", assetSchema);
 //# sourceMappingURL=assets_model.js.map

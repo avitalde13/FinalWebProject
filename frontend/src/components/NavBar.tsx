@@ -328,7 +328,7 @@ function ResponsiveAppBar() {
 
           </Box>}
 
-          {isLoggedIn && <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
+          {isLoggedIn &&  <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
 
             <Tooltip title="Add Asset"  onClick={handleClickOpenAddAsset}>
               <MenuItem key="Add">
@@ -339,12 +339,11 @@ function ResponsiveAppBar() {
               </MenuItem>
             </Tooltip>
 
+              
 
-
-            <MenuItem key="Profile" onClick={() => navigate("/profile")}>
+        <MenuItem key="Profile" onClick={() => navigate("/profile")}>
               <Typography textAlign="center">Profile</Typography>
-            </MenuItem>
-
+            </MenuItem>   
 
             <MenuItem key="Logout" onClick={deleteToken}>
               <Typography textAlign="center">Logout</Typography>

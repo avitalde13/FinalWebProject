@@ -3,7 +3,6 @@ import { Model } from "mongoose";
 import Asset, { IAsset } from "../models/assets_model";
 import auth from "../common/auth_middleware";
 
-
    const getAllAssets = async (req: Request, res: Response) => {
 
         try {
@@ -13,7 +12,6 @@ import auth from "../common/auth_middleware";
             res.status(500).json({ message: err.message });
         }
     };
-
 
     const getAssetsByAddress=  async(req: Request, res: Response) => {
     
@@ -70,22 +68,7 @@ import auth from "../common/auth_middleware";
             res.status(500).json({ message: err.message });
         }
     }
-    // const createAsset= async(req: Request, res: Response) => {
-    //     try {
-    //         const assetBody = {
-    //             address: req.body.address,
-    //             price: req.body.price,
-    //             imgSrc: req.body.imgSrc
-    //         }
-    //         console.log(assetBody);
-    //         const asset = new Asset(assetBody);
-    //         console.log(asset); 
-    //         asset.save();
-    //         res.send(asset);
-    //     } catch (err) {
-    //         res.status(500).json({ message: err.message });
-    //     }
-    // };
+
     const deleteAsset = async(req: Request, res: Response) => {
 
         try {
@@ -125,8 +108,8 @@ export default {
     getAssetsByAddress,
     getAssetsByPrice,
     getAssetById,
+    createAsset,
     createAssetHandler,
-    // createAsset,
     deleteAsset,
     updateAsset
 };
