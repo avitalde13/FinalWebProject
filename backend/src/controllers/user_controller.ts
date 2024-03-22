@@ -155,7 +155,6 @@ const removeAssetFromUserHandler = async (req: Request, res: Response) => {
 
 
 const loginUser = async (req: Request, res: Response) => {
-    console.log(req.body);
     const email = req.body.email;
     const password = req.body.password;
     if (!email || !password) {
@@ -164,7 +163,6 @@ const loginUser = async (req: Request, res: Response) => {
     try {
         
         const user = await User.findOne({email: email });
-        console.log(user);
         if (user == null) {
             return res.status(401).send("username or password incorrect");
         }
@@ -177,17 +175,13 @@ const loginUser = async (req: Request, res: Response) => {
         return res.status(200).send({ 'accessToken': token });
     } catch (err) {
         return res.status(400).send("error missing username or password");
+
     }
 }
-
 const UserInfo = async (req: Request, res: Response) => {
     try {
         const userid = req.body.userId;
-  
-
         const user = (await User.findOne({ _id:  userid  }));
-
-
         return res.status(200).send( user );
     } catch (err) {
         return res.status(400).send("failed to get user info");
@@ -205,75 +199,54 @@ const getAllUsers = async (req: Request, res: Response) => {
     }
 }
 
-const getUserById = async (req: Request, res: Response) => {
+
+
+const getUserByName = async (name: string) => {
+    if (name) {
+        try {
+            const user = await User.findOne({ name });
+            if (user) {
+                return user;
+            }
+            return null;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Name is required");
+};
+
+
+
+const getUserByEmail = async (email: string) => {
+    if (email) {
+        try {
+            const user = await User.findOne({ email });
+            if (user) {
+                return user;
+            }
+            return null;
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Email is required");
+};
+
+const getUserByEmailHandler = async (req: Request, res: Response) => {
     try {
-        const userId = req.params.userId;
-        res.status(200).json(User);
+        const user = await getUserByEmail(req.params.email);
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}   
-
-
-// const getUserById = async (req: Request, res: Response) => {
-//     try {
-//         const userId = req.params.userId;
-//         res.status(200).json(User);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-
-
-
-
-// const getUserByName = async (name: string) => {
-//     if (name) {
-//         try {
-//             const user = await User.findOne({ name });
-//             if (user) {
-//                 return user;
-//             }
-//             return null;
-//         } catch (error) {
-//             throw new Error(error.message);
-//         }
-//     }
-//     throw new Error("Name is required");
-// };
-
-
-
-// const getUserByEmail = async (email: string) => {
-//     if (email) {
-//         try {
-//             const user = await User.findOne({ email });
-//             if (user) {
-//                 return user;
-//             }
-//             return null;
-//         } catch (error) {
-//             throw new Error(error.message);
-//         }
-//     }
-//     throw new Error("Email is required");
-// };
-
-// const getUserByEmailHandler = async (req: Request, res: Response) => {
-//     try {
-//         const user = await getUserByEmail(req.params.email);
-//         res.status(200).json(user);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+};
 
 
 export default {
     getAllUsers,
-    getUserById,
-    // getUserByName,
-    // getUserByEmailHandler,
+    getUserByName,
+    getUserByEmailHandler,
     createUserHandler,
     deleteUserHandler,
     updateUserHandler,

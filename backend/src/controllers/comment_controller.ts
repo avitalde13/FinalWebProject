@@ -7,7 +7,6 @@ import auth from "../common/auth_middleware";
 class CommentsController{
 
     async getAllComments(req: Request, res: Response) {
-        console.log("getAllComments");
         try {
             const Comments = await Comment.find();
             res.send(Comments);
@@ -17,9 +16,8 @@ class CommentsController{
     }
 
     async getCommentByUserId(req: Request, res: Response) {
-      console.log("getCommentByUserId");
       try {
-          const Comments = await Comment.find({userId: req.query.userId});
+          const Comments = await Comment.find({userId: req.params.userId});
           res.send(Comments);
       } catch (err) {
           res.status(500).json({ message: err.message });
@@ -29,7 +27,7 @@ class CommentsController{
   async getCommentByAssetId(req: Request, res: Response) {
    
     try {
-        const Comments = await Comment.find({assetId: req.query.assetId});
+        const Comments = await Comment.find({assetId: req.params.assetId});
         res.send(Comments);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -37,7 +35,6 @@ class CommentsController{
 }
 
     async createComment(req: Request, res: Response) {
-        console.log("createComment");
         try {
             const commentBody = {
                 text: req.body.text,
@@ -52,7 +49,6 @@ class CommentsController{
         }
     }
     async deleteComment(req: Request, res: Response) {
-        console.log("deleteComment");
         try {
             const comment_id = req.query.commentId
             
@@ -64,7 +60,6 @@ class CommentsController{
     }
 
     async updateComment(req: Request, res: Response) {
-        console.log("createComment");
         const comment_id = req.query.commentId
         try {
             const CommentBody = {

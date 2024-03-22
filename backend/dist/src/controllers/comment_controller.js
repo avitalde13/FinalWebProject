@@ -16,7 +16,6 @@ const comment_model_1 = __importDefault(require("../models/comment_model"));
 class CommentsController {
     getAllComments(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAllComments");
             try {
                 const Comments = yield comment_model_1.default.find();
                 res.send(Comments);
@@ -28,9 +27,8 @@ class CommentsController {
     }
     getCommentByUserId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getCommentByUserId");
             try {
-                const Comments = yield comment_model_1.default.find({ userId: req.query.userId });
+                const Comments = yield comment_model_1.default.find({ userId: req.params.userId });
                 res.send(Comments);
             }
             catch (err) {
@@ -41,7 +39,7 @@ class CommentsController {
     getCommentByAssetId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const Comments = yield comment_model_1.default.find({ assetId: req.query.assetId });
+                const Comments = yield comment_model_1.default.find({ assetId: req.params.assetId });
                 res.send(Comments);
             }
             catch (err) {
@@ -51,7 +49,6 @@ class CommentsController {
     }
     createComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("createComment");
             try {
                 const commentBody = {
                     text: req.body.text,
@@ -69,7 +66,6 @@ class CommentsController {
     }
     deleteComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("deleteComment");
             try {
                 const comment_id = req.query.commentId;
                 yield comment_model_1.default.findByIdAndDelete(comment_id);
@@ -82,7 +78,6 @@ class CommentsController {
     }
     updateComment(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("createComment");
             const comment_id = req.query.commentId;
             try {
                 const CommentBody = {

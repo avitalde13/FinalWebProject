@@ -163,8 +163,8 @@ function ResponsiveAppBar() {
   const imgSelected2 = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value)
     if (e.target.files && e.target.files.length > 0) {
-      setImgSrc(e.target.files[1])
-      setAsset(prev => { return { ...prev, fileName: e.target.files[1].name } })
+      setImgSrc(e.target.files[0])
+      setAsset(prev => { return { ...prev, fileName: e.target.files[0].name } })
     }
   }
 
@@ -365,7 +365,7 @@ function ResponsiveAppBar() {
             <Box display={"flex"} justifyContent={'center'}>
               <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
-            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected2}></input>
+            <input style={{ display: "none" }} ref={fileInputRef2} type="file" onChange={imgSelected2}></input>
             <Button color="info" variant="contained" onClick={selectImg2}>Upload Asset Image</Button>
             <TextField variant="outlined" label="Address" onChange={event => { setAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
             <TextField variant="outlined" label="Price" onChange={event => { setAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>

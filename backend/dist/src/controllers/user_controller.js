@@ -152,7 +152,6 @@ const removeAssetFromUserHandler = (req, res) => __awaiter(void 0, void 0, void 
     }
 });
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     const email = req.body.email;
     const password = req.body.password;
     if (!email || !password) {
@@ -160,7 +159,6 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     try {
         const user = yield user_model_1.default.findOne({ email: email });
-        console.log(user);
         if (user == null) {
             return res.status(401).send("username or password incorrect");
         }
@@ -186,64 +184,58 @@ const UserInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(400).send("failed to get user info");
     }
 });
-// const getAllUsers = async (req: Request, res: Response) => {
-//     try {
-//         const user = await User.find();
-//         res.status(200).json(user);
-//         res.send(user);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-// const getUserById = async (req: Request, res: Response) => {
-//     try {
-//         const userId = req.params.userId;
-//         res.status(200).json(User);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-// const getUserByName = async (name: string) => {
-//     if (name) {
-//         try {
-//             const user = await User.findOne({ name });
-//             if (user) {
-//                 return user;
-//             }
-//             return null;
-//         } catch (error) {
-//             throw new Error(error.message);
-//         }
-//     }
-//     throw new Error("Name is required");
-// };
-// const getUserByEmail = async (email: string) => {
-//     if (email) {
-//         try {
-//             const user = await User.findOne({ email });
-//             if (user) {
-//                 return user;
-//             }
-//             return null;
-//         } catch (error) {
-//             throw new Error(error.message);
-//         }
-//     }
-//     throw new Error("Email is required");
-// };
-// const getUserByEmailHandler = async (req: Request, res: Response) => {
-//     try {
-//         const user = await getUserByEmail(req.params.email);
-//         res.status(200).json(user);
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield user_model_1.default.find();
+        res.status(200).json(users);
+    }
+    catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+const getUserByName = (name) => __awaiter(void 0, void 0, void 0, function* () {
+    if (name) {
+        try {
+            const user = yield user_model_1.default.findOne({ name });
+            if (user) {
+                return user;
+            }
+            return null;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Name is required");
+});
+const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    if (email) {
+        try {
+            const user = yield user_model_1.default.findOne({ email });
+            if (user) {
+                return user;
+            }
+            return null;
+        }
+        catch (error) {
+            throw new Error(error.message);
+        }
+    }
+    throw new Error("Email is required");
+});
+const getUserByEmailHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield getUserByEmail(req.params.email);
+        res.status(200).json(user);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 exports.default = {
-    // getAllUsers,
-    // getUserById,
-    // getUserByName,
-    // getUserByEmailHandler,
+    getAllUsers,
+    getUserByName,
+    getUserByEmailHandler,
     createUserHandler,
     deleteUserHandler,
     updateUserHandler,

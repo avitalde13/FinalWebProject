@@ -8,10 +8,9 @@ const router = express_1.default.Router();
 const user_controller_1 = __importDefault(require("../controllers/user_controller"));
 const authCheck_1 = __importDefault(require("../middleware/authCheck"));
 router
-    // .get("/getAll", validateToken, UserController.getAllUsers)
-    // .get("/:id", UserController.getUserById.bind(UserController))
-    // .get("/", UserController.getUserByName.bind(UserController))
-    // .get("/byEmail/:email", UserController.getUserByEmailHandler.bind(UserController))
+    .get("/getAll", authCheck_1.default, user_controller_1.default.getAllUsers)
+    .get("/", user_controller_1.default.getUserByName.bind(user_controller_1.default))
+    .get("/byEmail/:email", user_controller_1.default.getUserByEmailHandler.bind(user_controller_1.default))
     .post("/register", user_controller_1.default.createUserHandler.bind(user_controller_1.default))
     .delete("/deleteUser/:id", user_controller_1.default.deleteUserHandler.bind(user_controller_1.default))
     .put("/:id", user_controller_1.default.updateUserHandler.bind(user_controller_1.default))

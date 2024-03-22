@@ -1,9 +1,10 @@
-const { app, startServer, stopServer } = require('../app');
-const request = require('supertest');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const UserController = require('../controllers/user_controller');
-const User = require('../models/user_model');
+// import { app, startServer, stopServer } from '../app';
+import request from 'supertest';
+import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
+import UserController from '../controllers/user_controller';
+import User from '../models/user_model';
+import app from '../app';
 
 const user = {
     name: 'test',
@@ -14,13 +15,13 @@ let userid: any;
 
 
 
-beforeAll(async () => {
-    await startServer();
-});
+// beforeAll(async () => {
+//     await startServer();
+// });
 
-afterAll(async () => {
-    await stopServer();
-});
+// afterAll(async () => {
+//     await stopServer();
+// });
 
 
 
