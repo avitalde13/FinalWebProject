@@ -6,7 +6,7 @@ import auth from "../common/auth_middleware";
    const getAllAssets = async (req: Request, res: Response) => {
 
         try {
-            const assets = await Asset.find();
+            const assets = await Asset.find().sort({price: 1});
             res.send(assets);
         } catch (err) {
             res.status(500).json({ message: err.message });

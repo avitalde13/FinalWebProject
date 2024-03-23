@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { Model } from "mongoose";
 import Comment from "../models/comment_model";
+
+import User from "../models/user_model";
 import auth from "../common/auth_middleware";
 
 
-class CommentsController{
+class CommentsController {
 
     async getAllComments(req: Request, res: Response) {
         try {
@@ -16,30 +18,34 @@ class CommentsController{
     }
 
     async getCommentByUserId(req: Request, res: Response) {
-      try {
-          const Comments = await Comment.find({userId: req.params.userId});
-          res.send(Comments);
-      } catch (err) {
-          res.status(500).json({ message: err.message });
-      }
-  }
-
-  async getCommentByAssetId(req: Request, res: Response) {
-   
-    try {
-        const Comments = await Comment.find({assetId: req.params.assetId});
-        res.send(Comments);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
+        try {
+            const userId = req.query.userId.toString();
+            const Comments = await Comment.find({ userId: userId });
+            res.send(Comments);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
     }
-}
+
+    async getCommentByAssetId(req: Request, res: Response) {
+
+        try {
+            const assetId = req.query.assetId.toString();
+            const Comments = await Comment.find({ assetId: assetId });
+            res.send(Comments);
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    }
 
     async createComment(req: Request, res: Response) {
         try {
+            const userName = (await User.findOne({ _id:  req.body.userId  })).name;
             const commentBody = {
                 text: req.body.text,
                 assetId: req.body.assetId,
-                userId: req.body.userId
+                userId: req.body.userId,
+                userName: userName
             }
             const comment = new Comment(commentBody);
             comment.save();
@@ -51,9 +57,9 @@ class CommentsController{
     async deleteComment(req: Request, res: Response) {
         try {
             const comment_id = req.query.commentId
-            
-             await Comment.findByIdAndDelete(comment_id);
-            res.send({message: "Comment deleted successfully"});
+
+            await Comment.findByIdAndDelete(comment_id);
+            res.send({ message: "Comment deleted successfully" });
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
@@ -63,13 +69,13 @@ class CommentsController{
         const comment_id = req.query.commentId
         try {
             const CommentBody = {
-              text: req.body.text,
-              assetId: req.body.assetId,
-              userId: req.body.userId
+                text: req.body.text,
+                assetId: req.body.assetId,
+                userId: req.body.userId
             }
             const comment = await Comment.findByIdAndUpdate(
-                {_id: comment_id},
-                 CommentBody
+                { _id: comment_id },
+                CommentBody
             );
             comment.save();
             res.send(comment);

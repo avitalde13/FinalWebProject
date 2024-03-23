@@ -2,6 +2,7 @@ import mongoose,{ObjectId,Types} from "mongoose"
 export interface IComment{
   assetId:string,
   userId:string,
+  userName:string,
   text:string,
   date?:Date
 }
@@ -18,6 +19,9 @@ const CommentScheme = new mongoose.Schema<IComment>({
   text: {
     type: String,
     required: true,
+    trim: true,
+    minlength: 3,
+    maxlength: 100,
   },
   date: {
     type: Date,
@@ -26,6 +30,10 @@ const CommentScheme = new mongoose.Schema<IComment>({
       now.setHours(now.getHours() + 3);
       return now;
     }
+  },
+  userName: {
+    type: String,
+    required: true,
   },
 });
 

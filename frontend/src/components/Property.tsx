@@ -4,59 +4,80 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import { CardActionArea, DialogTitle, Grid, Link } from '@mui/material';
+import Button from '@mui/material/Button';
 
-
+import axios from 'axios';
+import { createRoutesFromElements } from 'react-router-dom';
+import { get } from 'http';
+import CommentsDialog from './CommentsDialog';
 
 interface Props {
-    asset: any;
+  asset: any;
 }
 
 const Property = (props: Props) => {
-    // return (
-    //     <div>
-    //         <p>id: {props.property.objectID}</p>
-    //         <p>price: {props.property.price.toString()}</p>
-    //         <p>contact name: {props.property.contactName}</p>
-    //         <p>rooms: {props.property.rooms.toString()}</p>
-    //         <p>rooms: {props.property.coverPhoto.url}</p>
 
-    //         <p>------------------------</p>
-    //     </div>
-    // );
+  const [openCommentsDialog, setOpenCommentsDialog] = React.useState(false);
 
-    return (
-        <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1}} >
-          <CardActionArea>
-            
-            
-            <CardMedia
-              component="img"
-              height="150"
-              image=  {props.asset.fileName ? `http://localhost:3000/public/${props.asset.fileName}` : props.asset.imgSrc}
-              alt="green iguana"
-            />
-            <CardContent>
-              
-              
-              <Typography gutterBottom variant="h5"  justifyContent={"center"} component="div" >
-                Price: {props.asset.price} $
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Address: {props.asset.address}  
-              
-              </Typography>
-              {props.asset.comments ? (
+ 
+  // const handleClickOpen = (scrollType: DialogProps['scroll']) => () => {
+  const handleClickOpen = () => () => {
+    setOpenCommentsDialog(true);
+    
+  };
+
+  return (
+    <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1 }} >
+      <CardActionArea>
+
+        <CardMedia // image
+          component="img"
+          height="150"
+          image={props.asset.fileName ? `http://localhost:3000/public/${props.asset.fileName}` : props.asset.imgSrc}
+          alt="green iguana"
+        />
+        <CardContent>
+
+          <Typography gutterBottom variant="h5" justifyContent={"center"} component="div" >
+            Price: {props.asset.price} $
+          </Typography>
+
+
+          <Typography variant="body2" color="text.secondary">
+            Address: {props.asset.address}
+          </Typography>
+
+
+          <React.Fragment>
+            <Button onClick={handleClickOpen()}>comments</Button>
+            <CommentsDialog assetId={props.asset._id} openState={openCommentsDialog} setOpenState={setOpenCommentsDialog} /> 
+          </React.Fragment>
+
+          <Typography variant="body2" color="text.secondary">
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => {
+                console.info("I'm a button.");
+              }}
+            >
+              {/* {props.asset.comments ? (
                 props.asset.comments.map((comment) => (
                   <p>{comment.text}</p>
                 ))
               ) : (
                 <p>No comments</p>
-              )}
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      );
+              )} */}
+            </Link>
+          </Typography>
+
+
+
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
 
 }
 

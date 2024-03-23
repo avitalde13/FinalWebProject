@@ -173,12 +173,7 @@ const UserProfile = () => {
                   </CardContent>
                 </Card>
               </Grid>
-       
           
-
-
-
-       
             <Card >
               <CardContent >
                 <Typography variant="h5" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'} textAlign={'center'}>
@@ -187,6 +182,8 @@ const UserProfile = () => {
                 <Typography  variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>{user.email}</Typography>
               </CardContent>
             </Card>
+
+            
             </Grid>
 
 

@@ -36,6 +36,8 @@ import avatar from '../assets/avatar.png'
 
 
 
+
+
 const pages = ['Home', 'About', 'Services', 'Contact'];
 
 function ResponsiveAppBar() {
@@ -363,7 +365,7 @@ function ResponsiveAppBar() {
         <DialogContent >
           <Stack spacing={2} margin={2}>
             <Box display={"flex"} justifyContent={'center'}>
-              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
+              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "350px" }} className="img-fluid" />
             </Box>
             <input style={{ display: "none" }} ref={fileInputRef2} type="file" onChange={imgSelected2}></input>
             <Button color="info" variant="contained" onClick={selectImg2}>Upload Asset Image</Button>
