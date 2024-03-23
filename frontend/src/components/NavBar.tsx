@@ -37,7 +37,6 @@ import avatar from '../assets/avatar.png'
 
 
 
-
 const pages = ['Home', 'About', 'Services', 'Contact'];
 
 function ResponsiveAppBar() {
@@ -148,6 +147,11 @@ function ResponsiveAppBar() {
   }
     await axios.post('http://localhost:3000/users/addAssetToUser/',body).then(res => res.data);  // add asset to user
     setOpenAddAsset(false);
+    setTimeout(() => {
+      navigate(0);
+    }, 100);
+
+ 
   }
 
 

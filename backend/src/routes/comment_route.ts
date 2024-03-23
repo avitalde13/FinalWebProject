@@ -7,8 +7,8 @@ router.get("/user", CommentController.getCommentByUserId.bind(CommentController)
 router.get("/asset", CommentController.getCommentByAssetId.bind(CommentController));
 
 
-router.post("/", CommentController.createComment.bind(CommentController));
-router.delete("/", CommentController.deleteComment.bind(CommentController));
+router.post("/addComment", CommentController.createComment.bind(CommentController));
+router.delete("/delete", CommentController.deleteComment.bind(CommentController));
 router.put("/", CommentController.updateComment.bind(CommentController));
 
 export default router;

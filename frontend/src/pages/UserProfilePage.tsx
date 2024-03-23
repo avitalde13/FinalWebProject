@@ -9,12 +9,15 @@ import avatar from '../assets/avatar.png'
 import MenuItem from '@mui/material/MenuItem';
 import { uploadPhoto } from '../services/file-service';
 import axios from 'axios';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from "react-router-dom";
 
 
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [assets, setAsset] = useState([]);
+  const navigate = useNavigate();
 
   const [isEditUserOpen, setOpenEditUser] = React.useState(false);
   const [editUser, setEditUser] = React.useState({ email: "", password: "", name: "", fileName: ""  });
@@ -24,45 +27,46 @@ const UserProfile = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/users/info', {
-          headers: {
-            'Authorization': JSON.parse(localStorage.getItem('accessToken'))
-          },
-          mode: 'cors',
-        });
-        const userdata = await response.json();
-        console.log("1", userdata.assets);
-        userdata.assets.forEach((asset) => {
-          fetchAssetData(asset);
-
-        });
-        setUser(userdata);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
 
+    }, []);
 
-    const fetchAssetData = async (assetId) => {
-      try {
-        const response = await fetch('http://localhost:3000/assets/' + assetId, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          mode: 'cors',
-        });
-        const asset = await response.json();
-        console.log("3", asset);
-        setAsset(prev => [...prev, asset]);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  }, []);
+  const fetchData = async  () => {
+    try {
+      const response = await fetch('http://localhost:3000/users/info', {
+        headers: {
+          'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+        },
+        mode: 'cors',
+      });
+      const userdata = await response.json();
+      console.log("1", userdata.assets);
+      userdata.assets.forEach((asset) => {
+        fetchAssetData(asset);
+
+      });
+      setUser(userdata);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchAssetData = async (assetId) => {
+    try {
+      const response = await fetch('http://localhost:3000/assets/' + assetId, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+      });
+      console.log("2", response);
+      const asset = await response.json();
+      console.log("3", asset);
+      setAsset(prev => [...prev, asset]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const handleClickOpenEditUser = () => {
     setOpenEditUser(true);
@@ -83,6 +87,29 @@ const UserProfile = () => {
     console.log("Selecting image...")
     fileInputRef.current?.click()
   }
+
+
+  const deleteAsset = async (assetId: String) => {
+    try{
+      const response = await fetch('http://localhost:3000/assets?assetId=' + assetId, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+      });
+      const data = await response.json();
+      setTimeout(() => {
+        navigate(0);
+      }, 100);
+
+  
+    }catch(error){  
+      console.error('Error fetching data:', error);
+    }
+
+  }
+
 
 
 
@@ -112,7 +139,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', height: '100vh'}} >
+    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', height: '100%' }} >
       <Navbar />
 
       <Grid container
@@ -187,13 +214,14 @@ const UserProfile = () => {
             </Grid>
 
 
-          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'} paddingTop={2} bgcolor={'highlight'} margin={5}>
+          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'} paddingTop={2} bgcolor={'highlight'} marginTop={'20vh'}>
             User Assets
           </Typography>
           <Grid item xs={12} container justifyContent="center" alignItems="center" >
-            <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'} maxWidth={'60rem'}>
+            <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'} maxWidth={'100%'}>
+              
               {assets && assets.length > 0 ? assets.map((asset) =>
-                <Property asset={asset} key={asset._id} />) :    <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>No Assets</Typography>}
+            <Card style={{display:"flex", flexDirection:"column", margin:"3rem", minWidth:"15rem"}}>  <Property asset={asset} key={asset._id} />  <div style={{display:"flex", justifyContent:"center", backgroundColor:"grey"}}><DeleteIcon onClick={()=> {deleteAsset(asset._id)}}/> </div>  </Card>)   :    <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>No Assets</Typography>}
             </Box>
           </Grid>
 

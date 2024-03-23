@@ -42,7 +42,7 @@ class CommentsController {
         try {
             const userName = (await User.findOne({ _id:  req.body.userId  })).name;
             const commentBody = {
-                text: req.body.text,
+                text: req.body.textComment,
                 assetId: req.body.assetId,
                 userId: req.body.userId,
                 userName: userName
