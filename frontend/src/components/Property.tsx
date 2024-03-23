@@ -28,7 +28,7 @@ const Property = (props: Props) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1 }} >
+    <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1 }} style={{backgroundColor: 'lightgray', minWidth:'15%', minHeight:'30%'}} >
       <CardActionArea>
 
         <CardMedia // image

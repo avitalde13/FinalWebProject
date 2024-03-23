@@ -153,7 +153,7 @@ export default function CommentsDialog(props: Props) {
 
 
                     <Grid >
-                        {comments.map((comment) => (
+                        {comments.length ==0 ? <h4>  no comments </h4> : comments.map((comment) => (
                             <Box marginBottom={3}>
                                 <Card >
                                     <CardContent >
