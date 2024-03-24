@@ -9,16 +9,11 @@ import avatar from '../assets/avatar.png'
 import MenuItem from '@mui/material/MenuItem';
 import { uploadPhoto } from '../services/file-service';
 import axios from 'axios';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useNavigate } from "react-router-dom";
-import { color } from "framer-motion";
-
 
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [assets, setAsset] = useState([]);
-  const navigate = useNavigate();
 
   const [isEditUserOpen, setOpenEditUser] = React.useState(false);
   const [editUser, setEditUser] = React.useState({ email: "", password: "", name: "", fileName: ""  });
@@ -28,46 +23,53 @@ const UserProfile = () => {
 
 
   useEffect(() => {
+
+    // const fetchUserData = async () => {
+    //   const response = await axios.get('http://localhost:3000/users/info', {
+    //     headers: {
+    //       'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+    //   }}).then(res => res.data);     
+    //   setUser(response);
+    // }
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/users/info', {
+          headers: {
+            'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+          },
+          mode: 'cors',
+        });
+        const userdata = await response.json();
+        console.log("1", userdata.assets);
+        userdata.assets.forEach((asset) => {
+          fetchAssetData(asset);
+
+        });
+        setUser(userdata);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
     fetchData();
 
-    }, []);
 
-  const fetchData = async  () => {
-    try {
-      const response = await fetch('http://localhost:3000/users/info', {
-        headers: {
-          'Authorization': JSON.parse(localStorage.getItem('accessToken'))
-        },
-        mode: 'cors',
-      });
-      const userdata = await response.json();
-      console.log("1", userdata.assets);
-      userdata.assets.forEach((asset) => {
-        fetchAssetData(asset);
-
-      });
-      setUser(userdata);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
-  const fetchAssetData = async (assetId) => {
-    try {
-      const response = await fetch('http://localhost:3000/assets/' + assetId, {
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-      });
-      console.log("2", response);
-      const asset = await response.json();
-      console.log("3", asset);
-      setAsset(prev => [...prev, asset]);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+    const fetchAssetData = async (assetId: string) => {
+      try {
+        const response = await fetch('http://localhost:3000/assets/' + assetId, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          mode: 'cors',
+        });
+        const asset = await response.json();
+        console.log("3", asset);
+        setAsset(prev => [...prev, asset]);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  }, []);
 
   const handleClickOpenEditUser = () => {
     setOpenEditUser(true);
@@ -90,33 +92,12 @@ const UserProfile = () => {
   }
 
 
-  const deleteAsset = async (assetId: String) => {
-    try{
-      const response = await fetch('http://localhost:3000/assets?assetId=' + assetId, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-      });
-      const data = await response.json();
-      setAsset(assets.filter(asset => asset._id !== assetId));
-
-  
-    }catch(error){  
-      console.error('Error fetching data:', error);
-    }
-
-  }
-
-
-
 
 
   const submitEditUser = async () => {
-    await uploadPhoto(imgSrc!);
 
-    
+
+    await uploadPhoto(imgSrc!);
 
     await axios.put('http://localhost:3000/users/' + user._id, { user: editUser}, {
       headers: {
@@ -138,14 +119,14 @@ const UserProfile = () => {
   }
 
   return (
-    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', minHeight:'85rem'}} >
+    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', height: '100vh'}} >
       <Navbar />
 
       <Grid container
         justifyContent="center"  >
 
-        <Grid item xs={12} container justifyContent="center" alignItems="center" >
-          <Typography variant="h3" align="center" gutterBottom fontFamily={'cursive'} paddingTop={2}  >
+        <Grid item xs={12} container justifyContent="center" alignItems="center" bgcolor={'Highlight'} >
+          <Typography variant="h3" align="center" gutterBottom fontFamily={'cursive'} paddingTop={2} >
             User Profile
           </Typography>
         </Grid>
@@ -155,16 +136,16 @@ const UserProfile = () => {
      
 
 
-        <Grid container maxWidth={'60rem'} justifyContent={'center'} alignItems={'center'} display={'flex'} >
+        <Grid container maxWidth={'70rem'} justifyContent={'center'} alignItems={'center'} display={'flex'}>
           
-          <Grid item xs={6} container direction="row" alignItems='baseline'  paddingTop={2}>
+          <Grid item xs={6} container direction="row" alignItems='baseline'  paddingTop={4}>
             
-            <Card  style={{backgroundColor: 'lightgray'}}>
+            <Card >
               <CardContent >
-                <Typography variant="h5" gutterBottom align="center" fontFamily={'serif'} bgcolor={'grey'}>
+                <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
                   Profile Picture
                 </Typography>
-                <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "350px" }} />
+                <img src={`http://localhost:3000/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
               </CardContent>
             </Card>
           </Grid>
@@ -173,11 +154,11 @@ const UserProfile = () => {
 
 
           <Grid item xs={6} justifyContent="center" alignItems="center" >
-            <Grid item xs={12} container justifyContent={'right'}paddingBottom={3} >
+            <Grid item xs={12} container justifyContent={'right'}paddingBottom={4} >
 
             <Tooltip title="Edit User Details"  onClick={handleClickOpenEditUser} >
           <MenuItem key="Add" >
-            <Fab size="medium" aria-label="add" color="warning" >
+            <Fab size="medium" color="primary" aria-label="add" >
              <EditIcon></EditIcon>
             </Fab>
           </MenuItem>
@@ -188,9 +169,9 @@ const UserProfile = () => {
 
   
               <Grid paddingBottom={5} >
-                <Card  style={{backgroundColor: 'lightgray'}}>
+                <Card >
                   <CardContent>
-                  <Typography variant="h5" gutterBottom  fontFamily={'serif'} bgcolor={'grey'} textAlign={'center'} >
+                  <Typography variant="h5" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'} textAlign={'center'} >
                   User Name
                 </Typography>
                 <Typography variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>
@@ -199,51 +180,37 @@ const UserProfile = () => {
                   </CardContent>
                 </Card>
               </Grid>
+       
           
-            <Card style={{backgroundColor: 'lightgray'}}>
+
+
+
+       
+            <Card >
               <CardContent >
-                <Typography variant="h5" gutterBottom fontFamily={'serif'}bgcolor={'grey'} textAlign={'center'}>
+                <Typography variant="h5" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'} textAlign={'center'}>
                   Email
                 </Typography>
                 <Typography  variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>{user.email}</Typography>
               </CardContent>
             </Card>
-
-            
             </Grid>
 
 
-          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'}  marginTop={'5vh'}>
+          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'} paddingTop={2} bgcolor={'highlight'} margin={5}>
             User Assets
           </Typography>
-
-
+          <Grid item xs={12} container justifyContent="center" alignItems="center" >
+            <Box display={'flex'} flexWrap={'wrap'} justifyContent={'center'} alignItems={'center'} maxWidth={'60rem'}>
+              {assets && assets.length > 0 ? assets.map((asset) =>
+                <Property asset={asset} key={asset._id} />) :    <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>No Assets</Typography>}
+            </Box>
+          </Grid>
 
         </Grid>
 
 
       </Grid>
-
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-    
-    padding={3}
-
-
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
->
-            {/* <Box display={'flex'} justifyContent={'center'}  alignItems={'center'} maxWidth={'100%'} > */}
-              
-              {assets && assets.length > 0 ? assets.map((asset) =>
-            <Card style={{display:"flex", flexDirection:"column", margin:"1rem", minWidth:'15%', minHeight:'30%',  backgroundColor:"lightgray"}}>  
-            <Property asset={asset} key={asset._id} />  <div style={{display:"flex", justifyContent:"center"}}>
-              <Button color="error" variant="contained" style={{width: "100%"}} onClick={()=> {deleteAsset(asset._id)}}><DeleteIcon onClick={()=> {deleteAsset(asset._id)}}/></Button> </div>  </Card>)   :   
-               <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>
-                No Assets
-                </Typography>}
-            {/* </Box> */}
-          </Grid>
 
       <Dialog
         // Edit User Profile

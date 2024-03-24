@@ -50,14 +50,33 @@ function ResponsiveAppBar() {
   const [isRegisterOpen, setOpenRegister] = React.useState(false);
   const [isLoginOpen, setOpenLogin] = React.useState(false);
   const [userLogin, setUserLogin] = React.useState({ email: "", password: "" });
-  const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "" });
+  const [userRegister, setUserRegister] = React.useState({ email: "", password: "", name: "", fileName: "avatar.png" });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [imgSrc, setImgSrc] = React.useState<File>();
   const [alertPop, setAlertPop] = React.useState(false);
+  const [loginAlert, setLoginAlert] = React.useState(false);
 
 
   const [isAddAssetOpen, setOpenAddAsset] = React.useState(false);
-  const [addAssetToUser, setAsset] = React.useState({ address: "", price: "", fileName: "" });
+  const [addAssetToUser, setAsset] = React.useState({ address: "", price: "", fileName: "homeAvatar.png" });
+
+  const [textVal, setTextVal] = React.useState(
+    {
+      name:
+      {
+        message: "",
+        error: false
+      },
+      email: {
+        message: "",
+        error: false
+      },
+      password: {
+        message: "",
+        error: false
+      }
+    }
+  );
 
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -90,7 +109,7 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
-  
+
   const handleClickOpenLogin = () => {
     setOpenLogin(true);
     setAnchorElUser(null);
@@ -100,58 +119,71 @@ function ResponsiveAppBar() {
   };
   const handleClickCloseLogin = () => {
     setOpenLogin(false);
+    setLoginAlert(false);
   };
 
   const SubmitLoginEvent = async () => {
-    const accessToken = await axios.post('http://localhost:3000/users/login', userLogin).catch(err => alert(err));
+    const response = await axios.post('http://localhost:3000/users/login', userLogin).catch(err => {
+      // check if 401
+      if (err.response.status === 401) {
+        setLoginAlert(true);
+        console.log(loginAlert);
+        return;
+      }
+    });
 
-    if (accessToken) {
-      localStorage.setItem('accessToken', JSON.stringify(accessToken.data.accessToken));
+    if (response) {
+      localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
       setIsLoggedIn(true);
       setOpenLogin(false);
-
+      setLoginAlert(false);
     }
   }
 
   const SubmitRegisterEvent = async () => {
-
-    console.log(userRegister);
-    await uploadPhoto(imgSrc!);
-    // console.log(url);
-    await axios.post('http://localhost:3000/users/register', { user: userRegister }).then(res => res.data);
-    // setIsLoggedIn(true
-    setOpenRegister(false);
-    setAlertPop(true);
-    setTimeout(() => {
-      navigate(0);
-    }, 2000);
+    if (!textVal.email.error && !textVal.name.error && !textVal.password.error) {
+      try {
+        await uploadPhoto(imgSrc!);
+      } catch (error) {
+        console.log(error);
+      }
+      // console.log(url);
+      await axios.post('http://localhost:3000/users/register', { user: userRegister }).then(res => res.data);
+      // setIsLoggedIn(true
+      setOpenRegister(false);
+      setAlertPop(true);
+      setTimeout(() => {
+        navigate(0);
+      }, 2000);
+    }
   }
 
   const addAsset = async () => {
-  
+
     await uploadPhoto(imgSrc!);
-    const response = await axios.post('http://localhost:3000/assets/addAsset', {asset: addAssetToUser}).then(res => res.data);  // creat asset
-    
+    const response = await axios.post('http://localhost:3000/assets/addAsset', { asset: addAssetToUser }).then(res => res.data);  // creat asset
+
     const asset_id = await response._id;
 
     const user_id = await axios.get('http://localhost:3000/users/info', {
       headers: {
         'Authorization': JSON.parse(localStorage.getItem('accessToken'))
-    }}).then(res => res.data);  // get user id
+      }
+    }).then(res => res.data);  // get user id
 
-  
+
     const user = await user_id._id;
     const body = {
       "asset": asset_id,
       "id": user
-  }
-    await axios.post('http://localhost:3000/users/addAssetToUser/',body).then(res => res.data);  // add asset to user
+    }
+    await axios.post('http://localhost:3000/users/addAssetToUser/', body).then(res => res.data);  // add asset to user
     setOpenAddAsset(false);
     setTimeout(() => {
       navigate(0);
     }, 100);
 
- 
+
   }
 
 
@@ -200,6 +232,25 @@ function ResponsiveAppBar() {
     }
   }, []);
 
+
+
+  const validateEmail = (event,) => {
+    if (!event.target.value.includes('@')) {
+      setTextVal(prev => { return { ...prev, email: { message: "Email is incorrect", error: true } } })
+    } else {
+      setTextVal(prev => { return { ...prev, email: { message: "", error: false } } })
+      setUserRegister(prev => { return { ...prev, email: event.target.value } })
+    }
+  }
+
+  const validateUserName = (event,) => {
+    if (event.target.value.includes(' ')) {
+      setTextVal(prev => { return { ...prev, name: { message: "Username must not contain spaces", error: true } } })
+    } else {
+      setTextVal(prev => { return { ...prev, name: { message: "", error: false } } })
+      setUserRegister(prev => { return { ...prev, name: event.target.value } })
+    }
+  }
 
 
   return (
@@ -334,22 +385,22 @@ function ResponsiveAppBar() {
 
           </Box>}
 
-          {isLoggedIn &&  <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
+          {isLoggedIn && <Box sx={{ flexGrow: 0, display: { xs: 'flex', md: 'flex' } }}>
 
-            <Tooltip title="Add Asset"  onClick={handleClickOpenAddAsset}>
+            <Tooltip title="Add Asset" onClick={handleClickOpenAddAsset}>
               <MenuItem key="Add">
                 <Fab size="medium" color="primary" aria-label="add" >
                   <AddIcon></AddIcon>
-              
+
                 </Fab>
               </MenuItem>
             </Tooltip>
 
-              
 
-        <MenuItem key="Profile" onClick={() => navigate("/profile")}>
+
+            <MenuItem key="Profile" onClick={() => navigate("/profile")}>
               <Typography textAlign="center">Profile</Typography>
-            </MenuItem>   
+            </MenuItem>
 
             <MenuItem key="Logout" onClick={deleteToken}>
               <Typography textAlign="center">Logout</Typography>
@@ -361,7 +412,7 @@ function ResponsiveAppBar() {
 
         </Toolbar>
       </Container>
-      	
+
       <Dialog
         // Add Asset Popup
         open={isAddAssetOpen} onClose={handleClickCloseAddAsset} fullWidth maxWidth="sm"  >
@@ -398,9 +449,9 @@ function ResponsiveAppBar() {
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
             <Button color="info" variant="contained" onClick={selectImg}>Upload Profile Image</Button>
 
-            <TextField variant="outlined" label="Username" onChange={event => { setUserRegister(prev => { return { ...prev, name: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" label="Username" error={textVal.name.error} helperText={textVal.name.message} onChange={(event) => validateUserName(event)}></TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserRegister(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
-            <TextField variant="outlined" label="Email" onChange={event => { setUserRegister(prev => { return { ...prev, email: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" error={textVal.email.error} helperText={textVal.email.message} label="Email" onChange={(event) => validateEmail(event)}></TextField>
 
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
             <Button color="info" variant="contained" onClick={SubmitRegisterEvent} >Submit</Button>
@@ -426,6 +477,11 @@ function ResponsiveAppBar() {
             <TextField variant="outlined" label="Email" onChange={event => { setUserLogin(prev => { return { ...prev, email: event.target.value } }) }}> </TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserLogin(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Stay Logged In"></FormControlLabel>
+            <Collapse  in={loginAlert}>
+              <div style={{justifyContent: "center", alignItems:"center", display: "flex", color: "red"}}>
+                <div>User and password incorrect</div>
+              </div>
+            </Collapse>
             <Button color="primary" variant="contained" onClick={SubmitLoginEvent} >Submit</Button>
           </Stack>
         </DialogContent>

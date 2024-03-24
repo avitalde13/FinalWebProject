@@ -16,6 +16,9 @@ import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { text } from 'stream/consumers';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
+
 
 
 interface Props {
@@ -73,14 +76,16 @@ export default function CommentsDialog(props: Props) {
 
 
     const getUserId = async () => {
-
+        const token = JSON.parse(localStorage.getItem('accessToken'));
+        if(!token) return;
         const user_id = await axios.get('http://localhost:3000/users/info', {
             headers: {
-                'Authorization': JSON.parse(localStorage.getItem('accessToken'))
+                'Authorization': token
             }
         }).then(res => res.data);  // get user id
 
         setUserId(user_id._id);
+        console.log(user_id._id);
     }
 
     const submitAddComment = async () => {
@@ -100,8 +105,8 @@ export default function CommentsDialog(props: Props) {
             const data = await response.json();
             setComments([...comments, data]);
             setNewComment({ textComment: "", assetId: "", userId: "" });
-            
-            
+
+
         } catch (error) {
             console.error('Error fetching data:', error);
         }
@@ -111,10 +116,14 @@ export default function CommentsDialog(props: Props) {
 
         const newDate = date.split('T');
         const days = newDate[0];
+        const day = days.split('-')[2];
+        const month = days.split('-')[1];
+        const year = days.split('-')[0];
+
         const time = newDate[1].split('.')[0];
         const hours = time.split(':')[0];
         const minutes = time.split(':')[1];
-        return days + ' , ' + hours + ':' + minutes;
+        return hours + ':' + minutes + ', ' + day + '/' + month + '/' + year;
     }
 
 
@@ -153,21 +162,25 @@ export default function CommentsDialog(props: Props) {
 
 
                     <Grid >
-                        {comments.length ==0 ? <h4>  no comments </h4> : comments.map((comment) => (
+                        {comments.length == 0 ? <h4>  no comments </h4> : comments.map((comment) => (
                             <Box marginBottom={3}>
-                                <Card >
+                                <Card style={{ backgroundColor: 'ButtonShadow' }} >
                                     <CardContent >
-                                        <Typography variant="body1" gutterBottom fontFamily={'unset'} textAlign={'right'} >
+                                        <Typography variant="body2" gutterBottom fontFamily={'unset'} textAlign={'right'} >
                                             {formatedDate(comment.date)}</Typography>
 
-                                        <Typography variant="body2" gutterBottom fontFamily={'unset'} textAlign={'left'}>
-                                            {comment.userName} :
+                                        <Typography variant="body1" gutterBottom fontFamily={'unset'} textAlign={'left'}>
+                                            {comment.userName}:
                                         </Typography>
 
                                         <Typography variant="body2" gutterBottom fontFamily={'unset'} bgcolor={'Highlight'} textAlign={'center'} fontWeight={'bold'} padding={1}>
                                             {comment.text}
                                         </Typography>
-                                        {userId === comment.userId && <DeleteIcon onClick={() => deleteComment(comment._id)} />}
+                                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+
+                                            {userId === comment.userId && <DeleteIcon onClick={() => deleteComment(comment._id)} />}
+
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </Box>
@@ -184,9 +197,11 @@ export default function CommentsDialog(props: Props) {
             </DialogContent>
             <DialogActions>
 
-                <TextField fullWidth={true} variant="outlined" label="Comment Text"  value= { newComment.textComment} onChange={event => { setNewComment(prev => { return { ...prev, textComment: event.target.value } }) }}></TextField>
-                <Button onClick={submitAddComment} variant='text'>add comment..</Button>
-                <Button onClick={handleClose}>cancel</Button>
+                <TextField fullWidth={true} variant="outlined" label="Comment Text" value={newComment.textComment} onChange={event => { setNewComment(prev => { return { ...prev, textComment: event.target.value } }) }}></TextField>
+                <Button onClick={submitAddComment} variant='contained' size='large'> <SubdirectoryArrowRightIcon onClick={submitAddComment} /> comment    </Button>
+
+                {/* <SubdirectoryArrowRightIcon  onClick={submitAddComment} style={{ cursor: 'pointer'}}> commet </SubdirectoryArrowRightIcon> */}
+                <Button onClick={handleClose} size='large' variant='contained' color='error'>cancel</Button>
             </DialogActions>
         </Dialog>
     );
