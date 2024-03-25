@@ -10,15 +10,23 @@ import userRoute from "./routes/user_route";
 import fileRoute from "./routes/file_route";
 import  cors from "cors";
 
-const initApp = (): Promise<Express> => {
-  
-  const promise = new Promise<Express>((resolve) => {
-    const db = mongoose.connection;
-    db.once("open", () => console.log("Connected to Database"));
-    db.on("error", (error) => console.error(error));
-    const url = process.env.DB_URL;
-    mongoose.connect(url!).then(() => {
-      const app = express();
+
+
+const app = express();
+
+const connectDB =  () => {
+  try {
+     
+      mongoose.connect(process.env.DB_URL!);
+      mongoose.connection.once('open', () => {
+          console.log('MongoDB connected');
+      });
+  } catch (error) {
+      // console.log(error.message);
+      process.exit(1);
+  }
+}
+connectDB();
 
       app.use(bodyParser.json());
       app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,10 +46,11 @@ const initApp = (): Promise<Express> => {
       app.use("/users", userRoute); 
       app.use ("/file", fileRoute);
       app.use ("/public", express.static("public"));
-      resolve(app); 
-    });
-  });
-  return promise;
-};
+  
 
-export default initApp;
+
+
+    export{ app};
+
+
+

@@ -1,44 +1,99 @@
-import { Request, Response } from "express";
-import assetsController from "../controllers/assets_controller";
-import Asset, { IAsset } from "../models/assets_model";
+import express from 'express';
+import request from "supertest";
+import { connection, disconnect, connect } from "mongoose";
+import jwt from "jsonwebtoken";
+import { IAsset } from "../models/assets_model";
+import axios from "axios";
+import { app } from '../app'
+import mongoose from 'mongoose';
 
-// Mock Express Request and Response objects
-const mockRequest = {} as Request;
-const mockResponse = {} as Response;
 
-describe("Assets Controller", () => {
-  describe("getAllAssets", () => {
-    it("should return all assets", async () => {
-      // Mock the find method of the Asset model
-      const mockAssets = [{ address: "123 Main St", price: 100000, fileName: "asset1.jpg" }, { address: "456 Elm St", price: 150000, fileName: "asset2.jpg" }];
-      jest.spyOn(Asset, "find").mockResolvedValue(mockAssets);
 
-      // Mock request and response objects
-      mockResponse.send = jest.fn();
 
-      // Call the getAllAssets controller method
-      await assetsController.getAllAssets(mockRequest, mockResponse);
 
-      // Assert that the response is sent with the correct data
-      expect(mockResponse.send).toHaveBeenCalledWith(mockAssets);
-    });
+const updateAsset = {
+  "address": "test address update",
+  "price": 123489,
+  "fileName": "housePhoto"
+}
 
-    it("should handle errors", async () => {
-      // Mock the find method of the Asset model to throw an error
-      jest.spyOn(Asset, "find").mockRejectedValue(new Error("Database error"));
+const newAsset = {
+  "address": "test address new",
+  "price": 112233,
+  "fileName": "housePhoto2"
+}
 
-      // Mock request and response objects
-      mockResponse.status = jest.fn().mockReturnThis();
-      mockResponse.json = jest.fn();
 
-      // Call the getAllAssets controller method
-      await assetsController.getAllAssets(mockRequest, mockResponse);
+let assetid = "65a6ab8a48eab7edddb9b1d0";
 
-      // Assert that the response status is set to 500 and an error message is sent
-      expect(mockResponse.status).toHaveBeenCalledWith(500);
-      expect(mockResponse.json).toHaveBeenCalledWith({ message: "Database error" });
-    });
+afterAll(async () => {
+  await mongoose.connection.close();
+});
+
+
+
+describe('Asset Tests', () => {
+
+
+
+  it("test get all assets", async () => {
+    const response = await request(app)
+      .get('/assets/')
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toBeDefined();
   });
 
-  // Add more tests for other controller methods as needed
+
+
+  it("test get Asset By Id", async () => {
+    const response = await request(app)
+      .get("/assets/" + assetid)
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toBeDefined();
+  });
+
+
+
+  it("test Create Asset", async () => {
+
+    const response1 = await request(app)
+      .post("/assets/addAsset")
+      .send({ "asset": newAsset});
+    expect(response1.statusCode).toEqual(200);
+    expect(response1.body).toBeDefined();
+
+
+    const response2 = await request(app)
+      .put("/assets?assetId=" + response1.body._id)
+      .send({ "asset": updateAsset});
+    expect(response2.statusCode).toEqual(200);
+    expect(response2.body).toBeDefined();
+
+
+
+    const response = await request(app)
+      .delete("/assets?assetId=" + response1.body._id)
+    // .set('Authorization', 'Bearer ' + jwt.sign({ email: asset.email }, 'secret'));
+    expect(response.statusCode).toEqual(200);
+
+
+
+
+  });
+
+
+
+
+
+
+
+
+
+
 });
+
+
+
+
+
