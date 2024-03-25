@@ -25,8 +25,10 @@ import axios from 'axios';
 
 import { useNavigate } from "react-router-dom";
 import { uploadPhoto } from '../services/file-service';
+// import { googleSignIn } from '../services/user-service';
 
 import avatar from '../assets/avatar.png'
+import { CredentialResponse,   GoogleLogin, googleLogout } from '@react-oauth/google';
 
 
 
@@ -137,6 +139,7 @@ function ResponsiveAppBar() {
       setIsLoggedIn(true);
       setOpenLogin(false);
       setLoginAlert(false);
+
     }
   }
 
@@ -222,6 +225,7 @@ function ResponsiveAppBar() {
   const deleteToken = () => {
     localStorage.removeItem('accessToken');
     setIsLoggedIn(false);
+    
     navigate("/home");
   }
 
@@ -252,6 +256,23 @@ function ResponsiveAppBar() {
     }
   }
 
+
+
+  const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse & { email: string }) => {
+    const response = await axios.post('http://localhost:3000/users/google', credentialResponse);
+    if (response) {
+      localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
+      setIsLoggedIn(true);
+      setOpenLogin(false);
+      setLoginAlert(false);
+
+     
+  }
+  }
+
+  function onGoogleLoginError(): void {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1A1A1A", }}>
@@ -353,7 +374,7 @@ function ResponsiveAppBar() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: '45px', paddingRight: 3}}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -368,13 +389,13 @@ function ResponsiveAppBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key="Login" onClick={handleClickOpenLogin}>
-
-                <Typography textAlign="center">Login</Typography>
+              <MenuItem key="Login" onClick={handleClickOpenLogin} >
+                <Typography textAlign="center">Login<Typography fontSize={11}>or login with google </Typography>  </Typography>
+               
               </MenuItem>
               <MenuItem key="Register" onClick={handleClickOpenRegister}>
 
-                <Typography textAlign="center">Register</Typography>
+                <Typography textAlign="center" paddingLeft={2}>Register</Typography>
               </MenuItem>
 
               {/* <MenuItem key="Register" onClick={()=> navigate("/registeration")}>
@@ -454,6 +475,7 @@ function ResponsiveAppBar() {
             <TextField variant="outlined" error={textVal.email.error} helperText={textVal.email.message} label="Email" onChange={(event) => validateEmail(event)}></TextField>
 
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
+           
             <Button color="info" variant="contained" onClick={SubmitRegisterEvent} >Submit</Button>
           </Stack>
         </DialogContent>
@@ -474,7 +496,8 @@ function ResponsiveAppBar() {
         <DialogTitle bgcolor={'lightskyblue'} color={'white'} fontFamily={'revert'} margin={1} >User Login  <IconButton onClick={handleClickCloseLogin} style={{ float: 'right' }}></IconButton>  </DialogTitle>
         <DialogContent>
           <Stack spacing={2} margin={2}>
-            <TextField variant="outlined" label="Email" onChange={event => { setUserLogin(prev => { return { ...prev, email: event.target.value } }) }}> </TextField>
+    
+            <TextField variant="outlined" label="Email" onChange={event => { setUserLogin(prev => {return { ...prev, email: event.target.value } }) }}> </TextField>
             <TextField variant="outlined" label="Password" type="Password" onChange={event => { setUserLogin(prev => { return { ...prev, password: event.target.value } }) }}></TextField>
             <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Stay Logged In"></FormControlLabel>
             <Collapse  in={loginAlert}>
@@ -482,6 +505,11 @@ function ResponsiveAppBar() {
                 <div>User and password incorrect</div>
               </div>
             </Collapse>
+
+   
+
+            <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginError} size='large'/>
+           
             <Button color="primary" variant="contained" onClick={SubmitLoginEvent} >Submit</Button>
           </Stack>
         </DialogContent>

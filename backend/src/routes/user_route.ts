@@ -8,6 +8,7 @@ router
     .get("/", UserController.getUserByName.bind(UserController))
     .get("/byEmail/:email", UserController.getUserByEmailHandler.bind(UserController))
     .post("/register", UserController.createUserHandler.bind(UserController))
+    .post("/google", UserController.googleSignIn.bind(UserController))
     .delete("/deleteUser/:id", UserController.deleteUserHandler.bind(UserController))
     .put("/:id", UserController.updateUserHandler.bind(UserController))
     .post("/addAssetToUser", UserController.addAssetToUserHandler.bind(UserController))

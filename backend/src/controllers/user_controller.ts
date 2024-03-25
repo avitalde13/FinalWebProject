@@ -1,10 +1,12 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { Request, Response, NextFunction } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import user_model from "../models/user_model";
 import User, { IUser } from "../models/user_model";
 import { Types } from "mongoose";
-
+import { OAuth2Client } from "google-auth-library";
+import  axios from "axios";
+import fs from "fs";
 
 
 
@@ -160,6 +162,7 @@ const loginUser = async (req: Request, res: Response) => {
     if (!email || !password) {
         return res.status(400).send("missing username or password");
     }    
+    
     try {
         
         const user = await User.findOne({email: email });
@@ -171,7 +174,7 @@ const loginUser = async (req: Request, res: Response) => {
             return res.status(401).send("username or password incorrect");
         } 
         const today = new Date();
-        const token = await jwt.sign({ id: user._id, createDate: today}, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id, createDate: today }, process.env.JWT_SECRET);
         return res.status(200).send({ 'accessToken': token });
     } catch (err) {
         return res.status(400).send("error missing username or password");
@@ -242,6 +245,59 @@ const getUserByEmailHandler = async (req: Request, res: Response) => {
     }
 };
 
+const client = new OAuth2Client();
+const googleSignIn = async (req: Request, res: Response) => {
+    try{
+        const ticket = await client.verifyIdToken({
+            idToken: req.body.credential,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const payload = ticket.getPayload();
+        const gmail = payload?.email;
+        
+
+        // const photo = axios.get(payload?.picture);
+        axios({
+            method: "get",
+            url: payload?.picture,
+            responseType: "stream"
+        }).then(function (response) {
+            response.data.pipe(fs.createWriteStream("public/" + payload?.email.split("@")[0] + ".png"));
+        });
+
+        if(gmail != null  ){
+            const user = await User.findOne({ email: gmail })
+            if (user == null) {
+                const newUser: IUser = {
+                    email: gmail,
+                    password: "password",
+                    name: payload?.name,
+                    fileName: payload?.email.split("@")[0] + ".png"
+                }
+                const myuser = new User({ ...newUser });
+                await myuser.save();
+               
+                const token = jwt.sign({ id: myuser._id }, process.env.JWT_SECRET);
+                res.status(200).json({ 'accessToken': token });
+            } else {
+                
+                res.status(400).send({message: "User already exists"});
+            }
+        }
+        else{
+            res.status(400).send("failed to sign in with google");
+        }
+    }catch(err){
+        console.log(err)
+        res.status(400).send("failed to sign in with google");
+    }
+
+
+
+
+
+}
+
 
 export default {
     getAllUsers,
@@ -254,4 +310,5 @@ export default {
     removeAssetFromUserHandler,
     loginUser,
     UserInfo,
+    googleSignIn
 };
