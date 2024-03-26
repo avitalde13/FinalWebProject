@@ -248,7 +248,7 @@ const UserProfile = () => {
       <Dialog
         // Edit User Profile
         open={isEditUserOpen} onClose={handleClickCloseEditUser} fullWidth maxWidth="sm"  >
-        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Add Asset<IconButton onClick={handleClickCloseEditUser} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
+        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Edit Your Profile<IconButton onClick={handleClickCloseEditUser} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
         <DialogContent >
           <Stack spacing={2} margin={2}>
             <Box display={"flex"} justifyContent={'center'}>

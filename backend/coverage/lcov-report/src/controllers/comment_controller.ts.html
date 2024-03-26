@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">36.11% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/36</span>
+                <span class='fraction'>13/36</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/6</span>
+                <span class='fraction'>2/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">36.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/36</span>
+                <span class='fraction'>13/36</span>
             </div>
         
             
@@ -196,25 +196,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -286,25 +286,25 @@ class CommentsController {
     async createComment(req: Request, res: Response) {
         try {
             const userName = (await User.findOne({ _id:  req.body.userId  })).name;
-            const commentBody = <span class="cstat-no" title="statement not covered" >{</span>
+            const commentBody = {
                 text: req.body.textComment,
                 assetId: req.body.assetId,
                 userId: req.body.userId,
                 userName: userName
             }
-            const comment = <span class="cstat-no" title="statement not covered" >new Comment(commentBody);</span>
-<span class="cstat-no" title="statement not covered" >            comment.save();</span>
-<span class="cstat-no" title="statement not covered" >            res.send(comment);</span>
+            const comment = new Comment(commentBody);
+            comment.save();
+            res.send(comment);
         } catch (err) {
-            res.status(500).json({ message: err.message });
+<span class="cstat-no" title="statement not covered" >            res.status(500).json({ message: err.message });</span>
         }
     }
-    async <span class="fstat-no" title="function not covered" >deleteComment(</span>req: Request, res: Response) {
-<span class="cstat-no" title="statement not covered" >        try {</span>
-            const comment_id = <span class="cstat-no" title="statement not covered" >req.query.commentId</span>
+    async deleteComment(req: Request, res: Response) {
+        try {
+            const comment_id = req.query.commentId
 &nbsp;
-<span class="cstat-no" title="statement not covered" >            await Comment.findByIdAndDelete(comment_id);</span>
-<span class="cstat-no" title="statement not covered" >            res.send({ message: "Comment deleted successfully" });</span>
+            await Comment.findByIdAndDelete(comment_id);
+            res.send({ message: "Comment deleted successfully" });
         } catch (err) {
 <span class="cstat-no" title="statement not covered" >            res.status(500).json({ message: err.message });</span>
         }
@@ -340,7 +340,7 @@ export default new CommentsController;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-03-26T01:47:59.945Z
+                at 2024-03-26T19:18:44.624Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

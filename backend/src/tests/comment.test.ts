@@ -6,10 +6,13 @@ import UserController from '../controllers/user_controller';
 import User from '../models/user_model';
 import { app, connectDB } from '../app';
 import { response } from 'express';
+import Comment from '../models/comment_model';
+import  CommentsController  from '../controllers/comment_controller';
+
 
 
 let assetId1: string;
-let commentId;
+
 
 assetId1 = "65a6ab8a48eab7edddb9b1dd";
 
@@ -62,6 +65,9 @@ afterAll(async () => {
 
 
 
+
+
+
 describe('Comment Tests', () => {
 
 
@@ -85,6 +91,10 @@ describe('Comment Tests', () => {
     });
 
 
+
+    let commentId1: any;
+
+
     it("test Add Comment", async () => {
         const response6 = await request(app)
             .post("/comments/addComment")
@@ -93,19 +103,21 @@ describe('Comment Tests', () => {
                 assetId: assetId1,
                 userId: userId1
             });
-        commentId = response6.body._d;
+        commentId1 = response6.body._id.toString();
+        console.log("commentId", commentId1);
         expect(response6.statusCode).toEqual(200);
         expect(response6.body).toBeDefined();
     });
 
     // it("test Update Comment", async () => {
     //     const response5 = await request(app)
-    //         .put("http://localhost:3000/comments?commentId=" + commentId)
-    //         .send({
+    //         .put("http://localhost:3000/comments/" + {_id: commentId1 } )
+    //         .send(
+    //             {
     //             textComment: "AvitalTestnewCommentC",
     //             assetId: assetId1,
     //             userId: userId1
-    //         });
+    //         }); 
     //     expect(response5.statusCode).toEqual(200);
     //     expect(response5.body).toBeDefined();
 
@@ -114,14 +126,13 @@ describe('Comment Tests', () => {
 
 
 
-    // it("test remove Asset From User", async () => {
-
-    //     const response = await request(app)
-    //         .delete("/users/removeAsset")
-    //         .send({ "asset": asset, id: userId });
-    //     expect(response.statusCode).toEqual(200);
-    // });
-
+    it("should delete a comment", async () => {
+        const response = await request(app)
+            .delete("/comments/delete?commentId=" + commentId1)
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toBeDefined();
+    });
+    
 
 
     // it("test Get All Users", async () => {
