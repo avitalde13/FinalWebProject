@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1711413947208" clover="3.2.0">
-  <project timestamp="1711413947208" name="All files">
+<coverage generated="1711417679960" clover="3.2.0">
+  <project timestamp="1711417679960" name="All files">
     <metrics statements="357" coveredstatements="223" conditionals="57" coveredconditionals="21" methods="67" coveredmethods="41" elements="481" coveredelements="285" complexity="0" loc="357" ncloc="357" packages="5" files="14" classes="14"/>
     <package name="src">
       <metrics statements="35" coveredstatements="34" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
@@ -134,8 +134,8 @@
         <line num="76" count="0" type="stmt"/>
         <line num="80" count="0" type="stmt"/>
         <line num="81" count="0" type="stmt"/>
-        <line num="83" count="0" type="stmt"/>
-        <line num="90" count="3" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="91" count="3" type="stmt"/>
       </file>
       <file name="file_controller.ts" path="/Users/avitaldebachar/Documents/GitHub/WebAppProj/backend/src/controllers/file_controller.ts">
         <metrics statements="8" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
