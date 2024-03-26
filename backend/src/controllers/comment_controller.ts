@@ -79,6 +79,7 @@ class CommentsController {
             );
             comment.save();
             res.send(comment);
+            
         } catch (err) {
             res.status(500).json({ message: err.message });
         }

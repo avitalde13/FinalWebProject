@@ -50,7 +50,7 @@ connectDB();
 
 
 
-    export{ app};
+    export{ app, connectDB};
 
 
 
