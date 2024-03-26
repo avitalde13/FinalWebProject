@@ -6,9 +6,12 @@ import bodyParser from "body-parser";
 import assetRoute from "./routes/asset_route";
 import commentRoute from "./routes/comment_route";
 import userRoute from "./routes/user_route";
-
 import fileRoute from "./routes/file_route";
 import  cors from "cors";
+
+
+import swaggerSpec from "./swagger"; // Assuming the correct file path is "../swagger"
+import swaggerUi from "swagger-ui-express";
 
 
 
@@ -46,6 +49,9 @@ connectDB();
       app.use("/users", userRoute); 
       app.use ("/file", fileRoute);
       app.use ("/public", express.static("public"));
+      app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+     
+
   
 
 

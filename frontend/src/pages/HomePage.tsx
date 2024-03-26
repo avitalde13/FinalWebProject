@@ -14,7 +14,7 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://localhost:3000/assets', {
+        const response = await fetch('http://localhost:3000/assets/getAll', {
           headers: {
             'Content-Type': 'application/json'
           },

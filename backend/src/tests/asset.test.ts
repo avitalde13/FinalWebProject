@@ -38,7 +38,7 @@ describe('Asset Tests', () => {
 
   it("test get all assets", async () => {
     const response = await request(app)
-      .get('/assets/')
+      .get('/assets/getAll')
     expect(response.statusCode).toEqual(200);
     expect(response.body).toBeDefined();
   });
