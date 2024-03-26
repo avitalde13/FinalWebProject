@@ -13,6 +13,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from "react-router-dom";
 import { color } from "framer-motion";
 
+import homeAvatar from '../assets/homeAvatar.png';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+
+
+
 
 
 const UserProfile = () => {
@@ -22,6 +27,8 @@ const UserProfile = () => {
 
   const [isEditUserOpen, setOpenEditUser] = React.useState(false);
   const [editUser, setEditUser] = React.useState({ email: "", password: "", name: "", fileName: ""  });
+const [editAsset, setEditAsset] = React.useState({ address: "", price: "", fileName: "" });
+const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [imgSrc, setImgSrc] = React.useState<File>();
@@ -75,6 +82,12 @@ const UserProfile = () => {
   const handleClickCloseEditUser = () => {
     setOpenEditUser(false);
   }
+ const handleClickOpenEditAsset = () => {
+  setOpenEditAsset(true);
+}
+  const  handleClickCloseEditAsset = () => {
+    setOpenEditAsset(false);
+  }
 
   const imgSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value)
@@ -115,9 +128,6 @@ const UserProfile = () => {
 
   const submitEditUser = async () => {
     await uploadPhoto(imgSrc!);
-
-    
-
     await axios.put('http://localhost:3000/users/' + user._id, { user: editUser}, {
       headers: {
         'Content-Type': 'application/json',
@@ -135,6 +145,29 @@ const UserProfile = () => {
 
   if (!user) {
     return <LoadingSpinner />;
+  }
+
+
+
+  const editAssetDetails =  async (asset_id) => {
+    await uploadPhoto(imgSrc!);
+    const assetId =  assets.filter((asset)=> asset._id === asset_id);
+
+if (assetId == asset_id){
+    const response = await axios.put('http://localhost:3000/assets?assetId=' + assetId,  {  asset: editAsset } )
+    console.log(response);
+}
+
+
+    // .then(response => {
+    //   console.log(response);
+    //   window.location.reload();
+    // }).catch(error => {
+    //   console.error('Error fetching data:', error);
+    // });
+
+
+
   }
 
   return (
@@ -238,12 +271,39 @@ const UserProfile = () => {
               {assets && assets.length > 0 ? assets.map((asset) =>
             <Card style={{display:"flex", flexDirection:"column", margin:"1rem", minWidth:'15%', minHeight:'30%',  backgroundColor:"lightgray"}}>  
             <Property asset={asset} key={asset._id} />  <div style={{display:"flex", justifyContent:"center"}}>
+
+            <Tooltip title="Edit User Details"  onClick={handleClickOpenEditAsset} >
+            <Button color="success" variant="contained" style={{width: "100%"}} onClick={handleClickOpenEditAsset}><ModeEditIcon onClick={handleClickOpenEditAsset}/></Button>
+            </Tooltip>
+
+            
               <Button color="error" variant="contained" style={{width: "100%"}} onClick={()=> {deleteAsset(asset._id)}}><DeleteIcon onClick={()=> {deleteAsset(asset._id)}}/></Button> </div>  </Card>)   :   
                <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>
                 No Assets
                 </Typography>}
             {/* </Box> */}
           </Grid>
+
+          <Dialog
+        // edit asset
+        open={isEditAssetOpen} onClose={handleClickCloseEditAsset} fullWidth maxWidth="sm"  >
+        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Edit Asset Details<IconButton onClick={handleClickCloseEditAsset} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
+        <DialogContent >
+          <Stack spacing={2} margin={2}>
+            <Box display={"flex"} justifyContent={'center'}>
+              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "350px" }} className="img-fluid" />
+            </Box>
+            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
+            <Button color="info" variant="contained" onClick={selectImg}>Upload Asset Image</Button>
+            <TextField variant="outlined" label="Address" onChange={event => { setEditAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
+            <TextField variant="outlined" label="Price" onChange={event => { setEditAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>
+            <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
+            <Button color="info" variant="contained" onClick={editAssetDetails}>Submit</Button>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         // Edit User Profile

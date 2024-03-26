@@ -280,8 +280,8 @@ const googleSignIn = async (req: Request, res: Response) => {
                 const token = jwt.sign({ id: myuser._id }, process.env.JWT_SECRET);
                 res.status(200).json({ 'accessToken': token });
             } else {
-                
-                res.status(400).send({message: "User already exists"});
+                const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+                res.status(200).json({ 'accessToken': token });
             }
         }
         else{
