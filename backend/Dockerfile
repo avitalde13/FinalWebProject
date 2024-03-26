@@ -1,6 +1,5 @@
-# Base image used 
-FROM alpine
-# Installing project dependencies
+FROM node:alpine
+# Install project dependencies
 RUN npm install
-# Running default command 
+# Run default command
 CMD ["npm", "start"]
