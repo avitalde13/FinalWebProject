@@ -39,7 +39,7 @@ import { CredentialResponse,   GoogleLogin, googleLogout } from '@react-oauth/go
 
 
 
-const pages = ['Home', 'About', 'Services', 'Contact'];
+const pages = [];
 
 function ResponsiveAppBar() {
   const navigate = useNavigate();
@@ -275,7 +275,7 @@ function ResponsiveAppBar() {
   }
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#1A1A1A", }}>
+    <AppBar position="static" sx={{ backgroundColor: "#1A1A1A", padding:'1vh' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <HouseIcon sx={{ display: { xs: 'none', md: 'flex', fontSize: 45 }, mr: 0.5 }} onClick={() => navigate("/home")} />

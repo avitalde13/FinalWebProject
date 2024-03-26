@@ -28,8 +28,8 @@ const Property = (props: Props) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 300, maxHeight: 400, justifyContent: 'center', margin: 1 }} style={{backgroundColor: 'lightgray', minWidth:'15%', minHeight:'30%'}} >
-      <CardActionArea>
+    <Card sx={{  justifyContent: 'center', margin: 1 }} style={{backgroundColor: 'lightgray', minWidth:'20%', minHeight:'35%'}} >
+
 
         <CardMedia // image
           component="img"
@@ -50,7 +50,7 @@ const Property = (props: Props) => {
 
 
           <React.Fragment>
-            <Button onClick={handleClickOpen()}>comments</Button>
+            <Button style={{paddingTop:'1rem'}} onClick={handleClickOpen()}>comments</Button>
             <CommentsDialog assetId={props.asset._id} openState={openCommentsDialog} setOpenState={setOpenCommentsDialog} /> 
           </React.Fragment>
 
@@ -75,7 +75,7 @@ const Property = (props: Props) => {
 
 
         </CardContent>
-      </CardActionArea>
+
     </Card>
   );
 
