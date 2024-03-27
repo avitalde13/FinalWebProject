@@ -125,7 +125,7 @@ function ResponsiveAppBar() {
   };
 
   const SubmitLoginEvent = async () => {
-    const response = await axios.post('http://node42.cs.colman.ac.il:4001/users/login', userLogin).catch(err => {
+    const response = await axios.post('http://node42.cs.colman.ac.il:4002/users/login', userLogin).catch(err => {
       // check if 401
       if (err.response.status === 401) {
         setLoginAlert(true);
@@ -151,7 +151,7 @@ function ResponsiveAppBar() {
         console.log(error);
       }
       // console.log(url);
-      await axios.post('http://node42.cs.colman.ac.il:4001/users/register', { user: userRegister }).then(res => res.data);
+      await axios.post('http://node42.cs.colman.ac.il:4002/users/register', { user: userRegister }).then(res => res.data);
       // setIsLoggedIn(true
       setOpenRegister(false);
       setAlertPop(true);
@@ -164,11 +164,11 @@ function ResponsiveAppBar() {
   const addAsset = async () => {
 
     await uploadPhoto(imgSrc!);
-    const response = await axios.post('http://node42.cs.colman.ac.il:4001/assets/addAsset', { asset: addAssetToUser }).then(res => res.data);  // creat asset
+    const response = await axios.post('http://node42.cs.colman.ac.il:4002/assets/addAsset', { asset: addAssetToUser }).then(res => res.data);  // creat asset
 
     const asset_id = await response._id;
 
-    const user_id = await axios.get('http://node42.cs.colman.ac.il:4001/users/info', {
+    const user_id = await axios.get('http://node42.cs.colman.ac.il:4002/users/info', {
       headers: {
         'Authorization': JSON.parse(localStorage.getItem('accessToken'))
       }
@@ -180,7 +180,7 @@ function ResponsiveAppBar() {
       "asset": asset_id,
       "id": user
     }
-    await axios.post('http://node42.cs.colman.ac.il:4001/users/addAssetToUser/', body).then(res => res.data);  // add asset to user
+    await axios.post('http://node42.cs.colman.ac.il:4002/users/addAssetToUser/', body).then(res => res.data);  // add asset to user
     setOpenAddAsset(false);
     setTimeout(() => {
       navigate(0);
@@ -226,7 +226,7 @@ function ResponsiveAppBar() {
     localStorage.removeItem('accessToken');
     setIsLoggedIn(false);
     
-    navigate("/home");
+    navigate("/");
   }
 
   React.useEffect(() => {
@@ -259,7 +259,7 @@ function ResponsiveAppBar() {
 
 
   const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse & { email: string }) => {
-    const response = await axios.post('http://node42.cs.colman.ac.il:4001/users/google', credentialResponse);
+    const response = await axios.post('http://node42.cs.colman.ac.il:4002/users/google', credentialResponse);
     if (response) {
       localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken));
       setIsLoggedIn(true);
@@ -294,7 +294,7 @@ function ResponsiveAppBar() {
               color: 'inherit',
               textDecoration: 'none',
             }}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           >
             Homly
           </Typography>
@@ -351,7 +351,7 @@ function ResponsiveAppBar() {
               color: 'white',
               textDecoration: 'none',
             }}
-            onClick={() => navigate("/home")}
+            onClick={() => navigate("/")}
           >
             Homly
           </Typography>

@@ -34,7 +34,7 @@ const Property = (props: Props) => {
         <CardMedia // image
           component="img"
           height="150"
-          image={props.asset.fileName ? `http://node42.cs.colman.ac.il:4001/public/${props.asset.fileName}` : props.asset.imgSrc}
+          image={props.asset.fileName ? `http://node42.cs.colman.ac.il:4002/public/${props.asset.fileName}` : props.asset.imgSrc}
           alt="green iguana"
         />
         <CardContent>

@@ -37,7 +37,7 @@ export default function CommentsDialog(props: Props) {
 
     const getCommentsByAssetId = async (assetId: string) => {
         try {
-            const response = await fetch(`http://node42.cs.colman.ac.il:4001/comments/asset?assetId=${assetId}`, {
+            const response = await fetch(`http://node42.cs.colman.ac.il:4002/comments/asset?assetId=${assetId}`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -54,7 +54,7 @@ export default function CommentsDialog(props: Props) {
     const deleteComment = async (commentId: string) => {
         try {
             console.log(commentId);
-            const response = await fetch(`http://node42.cs.colman.ac.il:4001/comments/delete/?commentId=${commentId}`, {
+            const response = await fetch(`http://node42.cs.colman.ac.il:4002/comments/delete/?commentId=${commentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ export default function CommentsDialog(props: Props) {
     const getUserId = async () => {
         const token = JSON.parse(localStorage.getItem('accessToken'));
         if(!token) return;
-        const user_id = await axios.get('http://node42.cs.colman.ac.il:4001/users/info', {
+        const user_id = await axios.get('http://node42.cs.colman.ac.il:4002/users/info', {
             headers: {
                 'Authorization': token
             }
@@ -91,7 +91,7 @@ export default function CommentsDialog(props: Props) {
     const submitAddComment = async () => {
         try {
 
-            const response = await fetch('http://node42.cs.colman.ac.il:4001/comments/addComment', {
+            const response = await fetch('http://node42.cs.colman.ac.il:4002/comments/addComment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
