@@ -41,7 +41,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const fetchData = async  () => {
     try {
-      const response = await fetch('http://node42.cs.colman.ac.il:4002/users/info', {
+      const response = await fetch('http://node42.cs.colman.ac.il:4001/users/info', {
         headers: {
           'Authorization': JSON.parse(localStorage.getItem('accessToken'))
         },
@@ -61,7 +61,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const fetchAssetData = async (assetId) => {
     try {
-      const response = await fetch('http://node42.cs.colman.ac.il:4002/assets/' + assetId, {
+      const response = await fetch('http://node42.cs.colman.ac.il:4001/assets/' + assetId, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -105,7 +105,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const deleteAsset = async (assetId: String) => {
     try{
-      const response = await fetch('http://node42.cs.colman.ac.il:4002/assets?assetId=' + assetId, {
+      const response = await fetch('http://node42.cs.colman.ac.il:4001/assets?assetId=' + assetId, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const submitEditUser = async () => {
     await uploadPhoto(imgSrc!);
-    await axios.put('http://node42.cs.colman.ac.il:4002/users/' + user._id, { user: editUser}, {
+    await axios.put('http://node42.cs.colman.ac.il:4001/users/' + user._id, { user: editUser}, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': JSON.parse(localStorage.getItem('accessToken'))
@@ -154,7 +154,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
     const assetId =  assets.filter((asset)=> asset._id === asset_id);
 
 if (assetId == asset_id){
-    const response = await axios.put('http://node42.cs.colman.ac.il:4002/assets?assetId=' + assetId,  {  asset: editAsset } )
+    const response = await axios.put('http://node42.cs.colman.ac.il:4001/assets?assetId=' + assetId,  {  asset: editAsset } )
     console.log(response);
 }
 
@@ -197,7 +197,7 @@ if (assetId == asset_id){
                 <Typography variant="h5" gutterBottom align="center" fontFamily={'serif'} bgcolor={'grey'}>
                   Profile Picture
                 </Typography>
-                <img src={`http://node42.cs.colman.ac.il:4002/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "350px" }} />
+                <img src={`http://node42.cs.colman.ac.il:4001/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "350px" }} />
               </CardContent>
             </Card>
           </Grid>

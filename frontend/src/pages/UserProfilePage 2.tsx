@@ -25,7 +25,7 @@ const UserProfile = () => {
   useEffect(() => {
 
     // const fetchUserData = async () => {
-    //   const response = await axios.get('http://node42.cs.colman.ac.il:4002/users/info', {
+    //   const response = await axios.get('http://node42.cs.colman.ac.il:4001/users/info', {
     //     headers: {
     //       'Authorization': JSON.parse(localStorage.getItem('accessToken'))
     //   }}).then(res => res.data);     
@@ -33,7 +33,7 @@ const UserProfile = () => {
     // }
     const fetchData = async () => {
       try {
-        const response = await fetch('http://node42.cs.colman.ac.il:4002/users/info', {
+        const response = await fetch('http://node42.cs.colman.ac.il:4001/users/info', {
           headers: {
             'Authorization': JSON.parse(localStorage.getItem('accessToken'))
           },
@@ -56,7 +56,7 @@ const UserProfile = () => {
 
     const fetchAssetData = async (assetId: string) => {
       try {
-        const response = await fetch('http://node42.cs.colman.ac.il:4002/assets/' + assetId, {
+        const response = await fetch('http://node42.cs.colman.ac.il:4001/assets/' + assetId, {
           headers: {
             'Content-Type': 'application/json'
           },
@@ -99,7 +99,7 @@ const UserProfile = () => {
 
     await uploadPhoto(imgSrc!);
 
-    await axios.put('http://node42.cs.colman.ac.il:4002/users/' + user._id, { user: editUser}, {
+    await axios.put('http://node42.cs.colman.ac.il:4001/users/' + user._id, { user: editUser}, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': JSON.parse(localStorage.getItem('accessToken'))
@@ -145,7 +145,7 @@ const UserProfile = () => {
                 <Typography variant="h6" gutterBottom align="center" fontFamily={'unset'} bgcolor={'Highlight'}>
                   Profile Picture
                 </Typography>
-                <img src={`http://node42.cs.colman.ac.il:4002/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
+                <img src={`http://node42.cs.colman.ac.il:4001/file?file=${user.fileName}`} alt="" style={{ height: "250px", width: "450px" }} />
               </CardContent>
             </Card>
           </Grid>
