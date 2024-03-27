@@ -64,7 +64,7 @@ const HomePage = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar assets={assets} setAssets={setAssets}></Navbar>
 
 
       <Grid  >

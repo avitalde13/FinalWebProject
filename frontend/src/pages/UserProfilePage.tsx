@@ -172,7 +172,7 @@ if (assetId == asset_id){
 
   return (
     <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', minHeight:'85rem'}} >
-      <Navbar />
+      <Navbar assets={assets} setAssets={setAsset}/>
 
       <Grid container
         justifyContent="center"  >

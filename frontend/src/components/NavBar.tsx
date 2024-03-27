@@ -41,7 +41,7 @@ import { CredentialResponse,   GoogleLogin, googleLogout } from '@react-oauth/go
 
 const pages = [];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props) {
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -182,11 +182,7 @@ function ResponsiveAppBar() {
     }
     await axios.post('http://node42.cs.colman.ac.il:4001/users/addAssetToUser/', body).then(res => res.data);  // add asset to user
     setOpenAddAsset(false);
-    setTimeout(() => {
-      navigate(0);
-    }, 100);
-
-
+    props.setAssets(prev => [...prev, { ...addAssetToUser, _id: asset_id }]);
   }
 
 
