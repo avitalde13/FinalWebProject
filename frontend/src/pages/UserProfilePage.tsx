@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Card, CardContent, Grid, Box , Fab, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, Stack, TextField, Tooltip} from "@mui/material";
+import { Typography, Card, CardContent, Grid, Box, Fab, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import Navbar from "../components/NavBar";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -26,9 +26,9 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const [isEditUserOpen, setOpenEditUser] = React.useState(false);
-  const [editUser, setEditUser] = React.useState({ email: "", password: "", name: "", fileName: ""  });
-const [editAsset, setEditAsset] = React.useState({ address: "", price: "", fileName: "" });
-const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
+  const [editUser, setEditUser] = React.useState({ email: "", password: "", name: "", fileName: "" });
+  const [editAsset, setEditAsset] = React.useState({ address: "", price: "", fileName: "" });
+  const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [imgSrc, setImgSrc] = React.useState<File>();
@@ -37,9 +37,9 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
   useEffect(() => {
     fetchData();
 
-    }, []);
+  }, []);
 
-  const fetchData = async  () => {
+  const fetchData = async () => {
     try {
       const response = await fetch('http://node42.cs.colman.ac.il:4001/users/info', {
         headers: {
@@ -82,10 +82,10 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
   const handleClickCloseEditUser = () => {
     setOpenEditUser(false);
   }
- const handleClickOpenEditAsset = () => {
-  setOpenEditAsset(true);
-}
-  const  handleClickCloseEditAsset = () => {
+  const handleClickOpenEditAsset = () => {
+    setOpenEditAsset(true);
+  }
+  const handleClickCloseEditAsset = () => {
     setOpenEditAsset(false);
   }
 
@@ -94,7 +94,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
     if (e.target.files && e.target.files.length > 0) {
       setImgSrc(e.target.files[0])
       setEditUser(prev => { return { ...prev, fileName: e.target.files[0].name } })
-     
+
     }
   }
   const selectImg = () => {
@@ -104,7 +104,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
 
   const deleteAsset = async (assetId: String) => {
-    try{
+    try {
       const response = await fetch('http://node42.cs.colman.ac.il:4001/assets?assetId=' + assetId, {
         method: 'DELETE',
         headers: {
@@ -115,8 +115,8 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
       const data = await response.json();
       setAsset(assets.filter(asset => asset._id !== assetId));
 
-  
-    }catch(error){  
+
+    } catch (error) {
       console.error('Error fetching data:', error);
     }
 
@@ -128,7 +128,7 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
   const submitEditUser = async () => {
     await uploadPhoto(imgSrc!);
-    await axios.put('http://node42.cs.colman.ac.il:4001/users/' + user._id, { user: editUser}, {
+    await axios.put('http://node42.cs.colman.ac.il:4001/users/' + user._id, { user: editUser }, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': JSON.parse(localStorage.getItem('accessToken'))
@@ -149,15 +149,20 @@ const [isEditAssetOpen, setOpenEditAsset] = React.useState(false);
 
 
 
-  const editAssetDetails =  async (asset_id) => {
+  const editAssetDetails = async (asset_id) => {
     await uploadPhoto(imgSrc!);
-    const assetId =  assets.filter((asset)=> asset._id === asset_id);
 
-if (assetId == asset_id){
-    const response = await axios.put('http://node42.cs.colman.ac.il:4001/assets?assetId=' + assetId,  {  asset: editAsset } )
-    console.log(response);
-}
-
+    const response = await axios.put('http://node42.cs.colman.ac.il:4001/assets?assetId=' + asset_id, editAsset )
+    // find my asset in the array of assets and update it using a map
+    assets.map(asset => {
+      if (asset._id === asset_id) {
+        asset.address = editAsset.address;
+        asset.price = editAsset.price;
+        asset.fileName = editAsset.fileName;
+      }
+    })
+    setAsset(assets);
+    setOpenEditAsset(false);
 
     // .then(response => {
     //   console.log(response);
@@ -170,9 +175,17 @@ if (assetId == asset_id){
 
   }
 
+  const imgSelectedAsset = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value)
+    if (e.target.files && e.target.files.length > 0) {
+      setImgSrc(e.target.files[0])
+      setEditAsset(prev => { return { ...prev, fileName: e.target.files[0].name } })
+    }
+  }
+
   return (
-    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', minHeight:'85rem'}} >
-      <Navbar assets={assets} setAssets={setAsset}/>
+    <div style={{ backgroundImage: 'url(https://img.freepik.com/free-photo/old-cement-wall-texture_1149-1280.jpg)', backgroundPosition: 'center', minHeight: '85rem' }} >
+      <Navbar assets={assets} setAssets={setAsset} />
 
       <Grid container
         justifyContent="center"  >
@@ -183,16 +196,16 @@ if (assetId == asset_id){
           </Typography>
         </Grid>
 
-     
 
-     
+
+
 
 
         <Grid container maxWidth={'60rem'} justifyContent={'center'} alignItems={'center'} display={'flex'} >
-          
-          <Grid item xs={6} container direction="row" alignItems='baseline'  paddingTop={2}>
-            
-            <Card  style={{backgroundColor: 'lightgray'}}>
+
+          <Grid item xs={6} container direction="row" alignItems='baseline' paddingTop={2}>
+
+            <Card style={{ backgroundColor: 'lightgray' }}>
               <CardContent >
                 <Typography variant="h5" gutterBottom align="center" fontFamily={'serif'} bgcolor={'grey'}>
                   Profile Picture
@@ -201,52 +214,52 @@ if (assetId == asset_id){
               </CardContent>
             </Card>
           </Grid>
-          
+
 
 
 
           <Grid item xs={6} justifyContent="center" alignItems="center" >
-            <Grid item xs={12} container justifyContent={'right'}paddingBottom={3} >
+            <Grid item xs={12} container justifyContent={'right'} paddingBottom={3} >
 
-            <Tooltip title="Edit User Details"  onClick={handleClickOpenEditUser} >
-          <MenuItem key="Add" >
-            <Fab size="medium" aria-label="add" color="warning" >
-             <EditIcon></EditIcon>
-            </Fab>
-          </MenuItem>
-        </Tooltip>
+              <Tooltip title="Edit User Details" onClick={handleClickOpenEditUser} >
+                <MenuItem key="Add" >
+                  <Fab size="medium" aria-label="add" color="warning" >
+                    <EditIcon></EditIcon>
+                  </Fab>
+                </MenuItem>
+              </Tooltip>
 
             </Grid>
 
 
-  
-              <Grid paddingBottom={5} >
-                <Card  style={{backgroundColor: 'lightgray'}}>
-                  <CardContent>
-                  <Typography variant="h5" gutterBottom  fontFamily={'serif'} bgcolor={'grey'} textAlign={'center'} >
-                  User Name
-                </Typography>
-                <Typography variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>
-                  {user.name}
-                </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-          
-            <Card style={{backgroundColor: 'lightgray'}}>
+
+            <Grid paddingBottom={5} >
+              <Card style={{ backgroundColor: 'lightgray' }}>
+                <CardContent>
+                  <Typography variant="h5" gutterBottom fontFamily={'serif'} bgcolor={'grey'} textAlign={'center'} >
+                    User Name
+                  </Typography>
+                  <Typography variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>
+                    {user.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Card style={{ backgroundColor: 'lightgray' }}>
               <CardContent >
-                <Typography variant="h5" gutterBottom fontFamily={'serif'}bgcolor={'grey'} textAlign={'center'}>
+                <Typography variant="h5" gutterBottom fontFamily={'serif'} bgcolor={'grey'} textAlign={'center'}>
                   Email
                 </Typography>
-                <Typography  variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>{user.email}</Typography>
+                <Typography variant="body2" fontSize={20} textAlign={'center'} fontStyle={'oblique'}>{user.email}</Typography>
               </CardContent>
             </Card>
 
-            
-            </Grid>
+
+          </Grid>
 
 
-          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'}  marginTop={'5vh'}>
+          <Typography gutterBottom variant="h3" align="center" fontFamily={'cursive'} marginTop={'5vh'}>
             User Assets
           </Typography>
 
@@ -258,52 +271,55 @@ if (assetId == asset_id){
       </Grid>
 
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-    
-    padding={3}
+
+        padding={3}
 
 
-      direction="row"
-      justifyContent="center"
-      alignItems="center"
->
-            {/* <Box display={'flex'} justifyContent={'center'}  alignItems={'center'} maxWidth={'100%'} > */}
-              
-              {assets && assets.length > 0 ? assets.map((asset) =>
-            <Card style={{display:"flex", flexDirection:"column", margin:"1rem", minWidth:'15%', minHeight:'30%',  backgroundColor:"lightgray"}}>  
-            <Property asset={asset} key={asset._id} />  <div style={{display:"flex", justifyContent:"center"}}>
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        {/* <Box display={'flex'} justifyContent={'center'}  alignItems={'center'} maxWidth={'100%'} > */}
 
-            <Tooltip title="Edit User Details"  onClick={handleClickOpenEditAsset} >
-            <Button color="success" variant="contained" style={{width: "100%"}} onClick={handleClickOpenEditAsset}><ModeEditIcon onClick={handleClickOpenEditAsset}/></Button>
-            </Tooltip>
+        {assets && assets.length > 0 ? assets.map((asset) =>
+          <Card style={{ display: "flex", flexDirection: "column", margin: "1rem", minWidth: '15%', minHeight: '30%', backgroundColor: "lightgray" }}>
+            <Property asset={asset} key={asset._id} />  <div style={{ display: "flex", justifyContent: "center" }}>
 
-            
-              <Button color="error" variant="contained" style={{width: "100%"}} onClick={()=> {deleteAsset(asset._id)}}><DeleteIcon onClick={()=> {deleteAsset(asset._id)}}/></Button> </div>  </Card>)   :   
-               <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'}  margin={5}>
-                No Assets
-                </Typography>}
-            {/* </Box> */}
-          </Grid>
+              {/* <Tooltip title="Edit User Details" onClick={handleClickOpenEditAsset} >
+                <Button color="success" variant="contained" style={{ width: "100%" }} onClick={handleClickOpenEditAsset}><ModeEditIcon onClick={handleClickOpenEditAsset} /></Button>
+              </Tooltip> */}
 
-          <Dialog
-        // edit asset
-        open={isEditAssetOpen} onClose={handleClickCloseEditAsset} fullWidth maxWidth="sm"  >
-        <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Edit Asset Details<IconButton onClick={handleClickCloseEditAsset} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
-        <DialogContent >
-          <Stack spacing={2} margin={2}>
-            <Box display={"flex"} justifyContent={'center'}>
-              <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "350px" }} className="img-fluid" />
-            </Box>
-            <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
-            <Button color="info" variant="contained" onClick={selectImg}>Upload Asset Image</Button>
-            <TextField variant="outlined" label="Address" onChange={event => { setEditAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
-            <TextField variant="outlined" label="Price" onChange={event => { setEditAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>
-            <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
-            <Button color="info" variant="contained" onClick={editAssetDetails}>Submit</Button>
-          </Stack>
-        </DialogContent>
-        <DialogActions>
-        </DialogActions>
-      </Dialog>
+
+              <Button color="error" variant="contained" style={{ width: "100%" }} onClick={() => { deleteAsset(asset._id) }}><DeleteIcon onClick={() => { deleteAsset(asset._id) }} /></Button>
+              <Dialog
+                // edit asset
+                open={isEditAssetOpen} onClose={handleClickCloseEditAsset} fullWidth maxWidth="sm"  >
+                <DialogTitle bgcolor={'black'} color={'white'} fontFamily={'revert'} margin={1} >Edit Asset Details<IconButton onClick={handleClickCloseEditAsset} style={{ float: 'inline-start' }}></IconButton>  </DialogTitle>
+                <DialogContent >
+                  <Stack spacing={2} margin={2}>
+                    <Box display={"flex"} justifyContent={'center'}>
+                      <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : homeAvatar} style={{ height: "250px", width: "350px" }} className="img-fluid" />
+                    </Box>
+                    <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelectedAsset}></input>
+                    <Button color="info" variant="contained" onClick={selectImg}>Upload Asset Image</Button>
+                    <TextField variant="outlined" label="Address" onChange={event => { setEditAsset(prev => { return { ...prev, address: event.target.value } }) }}></TextField>
+                    <TextField variant="outlined" label="Price" onChange={event => { setEditAsset(prev => { return { ...prev, price: event.target.value } }) }}></TextField>
+                    <FormControlLabel control={<Checkbox defaultChecked color="primary"></Checkbox>} label="Agree terms & conditions"></FormControlLabel>
+                    <Button color="info" variant="contained" onClick={() => { editAssetDetails(asset._id) }}>Submit</Button>
+                  </Stack>
+                </DialogContent>
+                <DialogActions>
+                </DialogActions>
+              </Dialog>
+
+            </div>  </Card>
+        ) :
+          <Typography gutterBottom variant="h5" align="center" fontFamily={'cursive'} margin={5}>
+            No Assets
+          </Typography>}
+        {/* </Box> */}
+      </Grid>
+
 
       <Dialog
         // Edit User Profile
@@ -314,7 +330,7 @@ if (assetId == asset_id){
             <Box display={"flex"} justifyContent={'center'}>
               <img alt="imageBroken" src={imgSrc ? URL.createObjectURL(imgSrc) : avatar} style={{ height: "250px", width: "250px" }} className="img-fluid" />
             </Box>
-      
+
             <input style={{ display: "none" }} ref={fileInputRef} type="file" onChange={imgSelected}></input>
             <Button color="info" variant="contained" onClick={selectImg}>Upload New Profile Image</Button>
             <TextField variant="outlined" label="Username" onChange={event => { setEditUser(prev => { return { ...prev, name: event.target.value } }) }}></TextField>
