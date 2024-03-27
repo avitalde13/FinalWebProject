@@ -156,7 +156,7 @@ export default function CommentsDialog(props: Props) {
 
 
         >
-            <DialogTitle id="scroll-dialog-title">Comments</DialogTitle>
+            <DialogTitle id="scroll-dialog-title " style={{backgroundColor:'Highlight'}}>Comments</DialogTitle>
             <DialogContent dividers={scroll === 'paper'}>
                 <DialogContentText id="scroll-dialog-description" ref={descriptionElementRef} tabIndex={-1}>
 
