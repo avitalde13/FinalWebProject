@@ -111,7 +111,7 @@ describe('Comment Tests', () => {
 
     // it("test Update Comment", async () => {
     //     const response5 = await request(app)
-    //         .put("http://localhost:3000/comments/" + {_id: commentId1 } )
+    //         .put("http://node42.cs.colman.ac.il:4001/comments/" + {_id: commentId1 } )
     //         .send(
     //             {
     //             textComment: "AvitalTestnewCommentC",

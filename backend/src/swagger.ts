@@ -14,7 +14,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://node42.cs.colman.ac.il:4001",
       },
     ],
   },

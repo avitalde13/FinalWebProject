@@ -14,7 +14,7 @@ const HomePage = () => {
     const fetchData = async () => {
       try {
 
-        const response = await fetch('http://localhost:3000/assets/getAll', {
+        const response = await fetch('http://node42.cs.colman.ac.il:4001/assets/getAll', {
           headers: {
             'Content-Type': 'application/json'
           },
@@ -39,7 +39,7 @@ const HomePage = () => {
     const fetchDataComment = async (assetid: string) => {
       let data = [];
       try {
-        const response = await fetch('http://localhost:3000/comments/asset?assetId=' + assetid, {
+        const response = await fetch('http://node42.cs.colman.ac.il:4001/comments/asset?assetId=' + assetid, {
           headers: {
             'Content-Type': 'application/json'
           },
