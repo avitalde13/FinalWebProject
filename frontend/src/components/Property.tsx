@@ -40,7 +40,7 @@ const Property = (props: Props) => {
         <CardContent>
 
           <Typography gutterBottom variant="h5" justifyContent={"center"} component="div" >
-            Price: {props.asset.price} $
+            Price: {props.asset.price}$
           </Typography>
 
 
