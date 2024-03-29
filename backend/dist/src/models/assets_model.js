@@ -7,14 +7,13 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const assetSchema = new mongoose_1.default.Schema({
     _id: {
         type: mongoose_1.default.Schema.Types.ObjectId,
-        required: true,
     },
     address: {
         type: String,
         required: true,
     },
     price: {
-        type: String,
+        type: Number,
         required: true,
     },
     imgSrc: {

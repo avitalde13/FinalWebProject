@@ -16,6 +16,12 @@ GET http://localhost:3000/student/1234567891
 
 POST http://localhost:3000/student
 Content-Type: application/json
+# Athorization:   Bearer <token   from login>
+
+{
+    "name": "John Doe 1",
+    "_id": "1234567891"
+}
 
 {
     "name": "John Doe 1",

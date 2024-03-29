@@ -16,7 +16,6 @@ const assets_model_1 = __importDefault(require("../models/assets_model"));
 class AssetsController {
     getAllAssets(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAllAssets");
             try {
                 const assets = yield assets_model_1.default.find();
                 res.send(assets);
@@ -28,7 +27,6 @@ class AssetsController {
     }
     getAssetsByAddress(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAssetsByAddress");
             try {
                 const assets = yield assets_model_1.default.find({ address: req.params.address });
                 res.send(assets);
@@ -40,10 +38,67 @@ class AssetsController {
     }
     getAssetsByPrice(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("getAssetsByPrice");
             try {
                 const assets = yield assets_model_1.default.find({ price: req.params.price });
                 res.send(assets);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    getAssetById(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const assets = yield assets_model_1.default.findOne({ _id: req.params.assetById });
+                res.send(assets);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    createAsset(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const assetBody = {
+                    address: req.body.address,
+                    price: req.body.price,
+                    imgSrc: req.body.imgSrc
+                };
+                const asset = new assets_model_1.default(assetBody);
+                asset.save();
+                res.send(asset);
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    deleteAsset(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const asset_id = req.query.assetId;
+                yield assets_model_1.default.findByIdAndDelete(asset_id);
+                res.send({ message: "Asset deleted successfully" });
+            }
+            catch (err) {
+                res.status(500).json({ message: err.message });
+            }
+        });
+    }
+    updateAsset(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const asset_id = req.query.assetId;
+            try {
+                const assetBody = {
+                    address: req.body.address,
+                    price: req.body.price,
+                    imgSrc: req.body.imgSrc
+                };
+                const asset = yield assets_model_1.default.findByIdAndUpdate({ _id: asset_id }, assetBody);
+                asset.save();
+                res.send(asset);
             }
             catch (err) {
                 res.status(500).json({ message: err.message });
